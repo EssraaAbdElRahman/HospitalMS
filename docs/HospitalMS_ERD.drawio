@@ -1,0 +1,537 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram name="HospitalMS ERD" id="erd1">
+    <mxGraphModel dx="2696" dy="1680" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="AspNetRoles" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="AspNetRoles" vertex="1">
+          <mxGeometry height="150" width="320" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetRoles.Id" parent="AspNetRoles" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  Id : nvarchar(450)" vertex="1">
+          <mxGeometry height="24" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetRoles.Description" parent="AspNetRoles" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Description : nvarchar(250) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetRoles.Name" parent="AspNetRoles" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Name : nvarchar(256) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetRoles.NormalizedName" parent="AspNetRoles" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UQ  NormalizedName : nvarchar(256) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetRoles.ConcurrencyStamp" parent="AspNetRoles" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="ConcurrencyStamp : nvarchar(max) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetRoleClaims" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="AspNetRoleClaims" vertex="1">
+          <mxGeometry height="126" width="320" x="40" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetRoleClaims.Id" parent="AspNetRoleClaims" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  Id : int identity" vertex="1">
+          <mxGeometry height="24" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetRoleClaims.RoleId" parent="AspNetRoleClaims" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="FK  RoleId : nvarchar(450)" vertex="1">
+          <mxGeometry height="24" width="320" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetRoleClaims.ClaimType" parent="AspNetRoleClaims" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="ClaimType : nvarchar(max) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetRoleClaims.ClaimValue" parent="AspNetRoleClaims" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="ClaimValue : nvarchar(max) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserRoles" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="AspNetUserRoles" vertex="1">
+          <mxGeometry height="78" width="320" x="490" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserRoles.UserId" parent="AspNetUserRoles" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK,FK  UserId : nvarchar(450)" vertex="1">
+          <mxGeometry height="24" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserRoles.RoleId" parent="AspNetUserRoles" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK,FK  RoleId : nvarchar(450)" vertex="1">
+          <mxGeometry height="24" width="320" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="AspNetUsers" vertex="1">
+          <mxGeometry height="630" width="320" x="430" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.Id" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  Id : nvarchar(450)" vertex="1">
+          <mxGeometry height="24" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.FullName" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="FullName : nvarchar(max)" vertex="1">
+          <mxGeometry height="24" width="320" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.Status" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Status : int" vertex="1">
+          <mxGeometry height="24" width="320" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.UserType" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UserType : int" vertex="1">
+          <mxGeometry height="24" width="320" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.StaffType" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="StaffType : int (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.PasswordResetStatus" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="PasswordResetStatus : int" vertex="1">
+          <mxGeometry height="24" width="320" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.IsAdmin" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="IsAdmin : bit" vertex="1">
+          <mxGeometry height="24" width="320" y="174" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.CreatedByAdminId" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedByAdminId : nvarchar(max) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="198" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.CreatedAtUtc" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedAtUtc : datetime2" vertex="1">
+          <mxGeometry height="24" width="320" y="222" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.UpdatedAtUtc" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedAtUtc : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="246" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.UpdatedByAdminId" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedByAdminId : nvarchar(max) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.UserName" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UQ  UserName : nvarchar(256) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="294" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.NormalizedUserName" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="NormalizedUserName : nvarchar(256) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="318" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.Email" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Email : nvarchar(256) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="342" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.NormalizedEmail" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="NormalizedEmail : nvarchar(256) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="366" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.EmailConfirmed" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="EmailConfirmed : bit" vertex="1">
+          <mxGeometry height="24" width="320" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.PasswordHash" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="PasswordHash : nvarchar(max) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="414" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.SecurityStamp" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="SecurityStamp : nvarchar(max) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="438" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.ConcurrencyStamp" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="ConcurrencyStamp : nvarchar(max) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="462" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.PhoneNumber" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="PhoneNumber : nvarchar(max) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="486" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.PhoneNumberConfirmed" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="PhoneNumberConfirmed : bit" vertex="1">
+          <mxGeometry height="24" width="320" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.TwoFactorEnabled" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="TwoFactorEnabled : bit" vertex="1">
+          <mxGeometry height="24" width="320" y="534" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.LockoutEnd" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="LockoutEnd : datetimeoffset (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="558" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.LockoutEnabled" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="LockoutEnabled : bit" vertex="1">
+          <mxGeometry height="24" width="320" y="582" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUsers.AccessFailedCount" parent="AspNetUsers" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="AccessFailedCount : int" vertex="1">
+          <mxGeometry height="24" width="320" y="606" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserClaims" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="AspNetUserClaims" vertex="1">
+          <mxGeometry height="126" width="320" x="140" y="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserClaims.Id" parent="AspNetUserClaims" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  Id : int identity" vertex="1">
+          <mxGeometry height="24" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserClaims.UserId" parent="AspNetUserClaims" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="FK  UserId : nvarchar(450)" vertex="1">
+          <mxGeometry height="24" width="320" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserClaims.ClaimType" parent="AspNetUserClaims" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="ClaimType : nvarchar(max) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserClaims.ClaimValue" parent="AspNetUserClaims" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="ClaimValue : nvarchar(max) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserLogins" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="AspNetUserLogins" vertex="1">
+          <mxGeometry height="126" width="320" x="20" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserLogins.LoginProvider" parent="AspNetUserLogins" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  LoginProvider : nvarchar(450)" vertex="1">
+          <mxGeometry height="24" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserLogins.ProviderKey" parent="AspNetUserLogins" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  ProviderKey : nvarchar(450)" vertex="1">
+          <mxGeometry height="24" width="320" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserLogins.ProviderDisplayName" parent="AspNetUserLogins" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="ProviderDisplayName : nvarchar(max) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserLogins.UserId" parent="AspNetUserLogins" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="FK  UserId : nvarchar(450)" vertex="1">
+          <mxGeometry height="24" width="320" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserTokens" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="AspNetUserTokens" vertex="1">
+          <mxGeometry height="126" width="320" x="30" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserTokens.UserId" parent="AspNetUserTokens" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK,FK  UserId : nvarchar(450)" vertex="1">
+          <mxGeometry height="24" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserTokens.LoginProvider" parent="AspNetUserTokens" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  LoginProvider : nvarchar(450)" vertex="1">
+          <mxGeometry height="24" width="320" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserTokens.Name" parent="AspNetUserTokens" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  Name : nvarchar(450)" vertex="1">
+          <mxGeometry height="24" width="320" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="AspNetUserTokens.Value" parent="AspNetUserTokens" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Value : nvarchar(max) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" value="Patients" vertex="1">
+          <mxGeometry height="414" width="320" x="940" y="36" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.Id" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  Id : uniqueidentifier" vertex="1">
+          <mxGeometry height="24" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.UserId" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="FK,UQ  UserId : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.Name" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Name : nvarchar(150)" vertex="1">
+          <mxGeometry height="24" width="320" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.NationalId" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UQ  NationalId : nvarchar(14)" vertex="1">
+          <mxGeometry height="24" width="320" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.Gender" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Gender : nvarchar(10)" vertex="1">
+          <mxGeometry height="24" width="320" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.Address" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Address : nvarchar(250)" vertex="1">
+          <mxGeometry height="24" width="320" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.Country" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Country : nvarchar(100)" vertex="1">
+          <mxGeometry height="24" width="320" y="174" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.City" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="City : nvarchar(100)" vertex="1">
+          <mxGeometry height="24" width="320" y="198" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.Notes" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Notes : nvarchar(500) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="222" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.CreatedAt" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedAt : datetime2" vertex="1">
+          <mxGeometry height="24" width="320" y="246" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.CreatedBy" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.UpdatedAt" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedAt : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="294" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.UpdatedBy" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="318" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.DeletedAt" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="DeletedAt : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="342" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.IsDeleted" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="IsDeleted : bit (default 0)" vertex="1">
+          <mxGeometry height="24" width="320" y="366" as="geometry" />
+        </mxCell>
+        <mxCell id="Patients.DeletedBy" parent="Patients" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="DeletedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="Receptionists" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" value="Receptionists" vertex="1">
+          <mxGeometry height="342" width="320" x="940" y="472" as="geometry" />
+        </mxCell>
+        <mxCell id="Receptionists.Id" parent="Receptionists" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  Id : uniqueidentifier" vertex="1">
+          <mxGeometry height="24" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Receptionists.Name" parent="Receptionists" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Name : nvarchar(150)" vertex="1">
+          <mxGeometry height="24" width="320" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="Receptionists.UserId" parent="Receptionists" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="FK,UQ  UserId : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="Receptionists.NationalId" parent="Receptionists" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UQ  NationalId : nvarchar(14)" vertex="1">
+          <mxGeometry height="24" width="320" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="Receptionists.HireDate" parent="Receptionists" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="HireDate : datetime2" vertex="1">
+          <mxGeometry height="24" width="320" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="Receptionists.Salary" parent="Receptionists" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Salary : decimal(18,2)" vertex="1">
+          <mxGeometry height="24" width="320" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="Receptionists.CreatedAt" parent="Receptionists" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedAt : datetime2" vertex="1">
+          <mxGeometry height="24" width="320" y="174" as="geometry" />
+        </mxCell>
+        <mxCell id="Receptionists.CreatedBy" parent="Receptionists" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="198" as="geometry" />
+        </mxCell>
+        <mxCell id="Receptionists.UpdatedAt" parent="Receptionists" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedAt : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="222" as="geometry" />
+        </mxCell>
+        <mxCell id="Receptionists.UpdatedBy" parent="Receptionists" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="246" as="geometry" />
+        </mxCell>
+        <mxCell id="Receptionists.DeletedAt" parent="Receptionists" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="DeletedAt : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="Receptionists.IsDeleted" parent="Receptionists" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="IsDeleted : bit (default 0)" vertex="1">
+          <mxGeometry height="24" width="320" y="294" as="geometry" />
+        </mxCell>
+        <mxCell id="Receptionists.DeletedBy" parent="Receptionists" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="DeletedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="318" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" value="Doctors" vertex="1">
+          <mxGeometry height="438" width="320" x="950" y="828" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.Id" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  Id : uniqueidentifier" vertex="1">
+          <mxGeometry height="24" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.Name" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Name : nvarchar(150)" vertex="1">
+          <mxGeometry height="24" width="320" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.UserId" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="FK,UQ  UserId : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.Bio" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Bio : nvarchar(2000)" vertex="1">
+          <mxGeometry height="24" width="320" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.SpecialtyId" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="FK  SpecialtyId : uniqueidentifier" vertex="1">
+          <mxGeometry height="24" width="320" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.YearsOfExperience" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="YearsOfExperience : int" vertex="1">
+          <mxGeometry height="24" width="320" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.DepartmentId" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="FK  DepartmentId : uniqueidentifier" vertex="1">
+          <mxGeometry height="24" width="320" y="174" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.NationalId" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UQ  NationalId : nvarchar(14)" vertex="1">
+          <mxGeometry height="24" width="320" y="198" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.HireDate" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="HireDate : datetime2" vertex="1">
+          <mxGeometry height="24" width="320" y="222" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.Salary" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Salary : decimal(18,2)" vertex="1">
+          <mxGeometry height="24" width="320" y="246" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.CreatedAt" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedAt : datetime2" vertex="1">
+          <mxGeometry height="24" width="320" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.CreatedBy" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="294" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.UpdatedAt" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedAt : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="318" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.UpdatedBy" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="342" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.DeletedAt" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="DeletedAt : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="366" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.IsDeleted" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="IsDeleted : bit (default 0)" vertex="1">
+          <mxGeometry height="24" width="320" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="Doctors.DeletedBy" parent="Doctors" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="DeletedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="414" as="geometry" />
+        </mxCell>
+        <mxCell id="Departments" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" value="Departments" vertex="1">
+          <mxGeometry height="270" width="320" x="1300" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="Departments.Id" parent="Departments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  Id : uniqueidentifier" vertex="1">
+          <mxGeometry height="24" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="4LhYul6wF_Urj5sI6w6d-1" parent="Departments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  Id : uniqueidentifier" vertex="1">
+          <mxGeometry height="24" width="320" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="Departments.Name" parent="Departments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UQ  Name : nvarchar(100)" vertex="1">
+          <mxGeometry height="24" width="320" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="Departments.CreatedAt" parent="Departments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedAt : datetime2" vertex="1">
+          <mxGeometry height="24" width="320" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="Departments.CreatedBy" parent="Departments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="Departments.UpdatedAt" parent="Departments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedAt : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="Departments.UpdatedBy" parent="Departments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="174" as="geometry" />
+        </mxCell>
+        <mxCell id="Departments.DeletedAt" parent="Departments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="DeletedAt : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="198" as="geometry" />
+        </mxCell>
+        <mxCell id="Departments.IsDeleted" parent="Departments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="IsDeleted : bit (default 0)" vertex="1">
+          <mxGeometry height="24" width="320" y="222" as="geometry" />
+        </mxCell>
+        <mxCell id="Departments.DeletedBy" parent="Departments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="DeletedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="246" as="geometry" />
+        </mxCell>
+        <mxCell id="Specialisties" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" value="Specialisties" vertex="1">
+          <mxGeometry height="246" width="320" x="1470" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="Specialisties.Id" parent="Specialisties" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  Id : uniqueidentifier" vertex="1">
+          <mxGeometry height="24" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Specialisties.Name" parent="Specialisties" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UQ  Name : nvarchar(100)" vertex="1">
+          <mxGeometry height="24" width="320" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="Specialisties.CreatedAt" parent="Specialisties" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedAt : datetime2" vertex="1">
+          <mxGeometry height="24" width="320" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="Specialisties.CreatedBy" parent="Specialisties" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="Specialisties.UpdatedAt" parent="Specialisties" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedAt : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="Specialisties.UpdatedBy" parent="Specialisties" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="Specialisties.DeletedAt" parent="Specialisties" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="DeletedAt : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="174" as="geometry" />
+        </mxCell>
+        <mxCell id="Specialisties.IsDeleted" parent="Specialisties" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="IsDeleted : bit (default 0)" vertex="1">
+          <mxGeometry height="24" width="320" y="198" as="geometry" />
+        </mxCell>
+        <mxCell id="Specialisties.DeletedBy" parent="Specialisties" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="DeletedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="222" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointments" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;" value="Appointments" vertex="1">
+          <mxGeometry height="342" width="320" x="1370" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointments.Id" parent="Appointments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  Id : uniqueidentifier" vertex="1">
+          <mxGeometry height="24" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointments.PatientId" parent="Appointments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="FK  PatientId : uniqueidentifier" vertex="1">
+          <mxGeometry height="24" width="320" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointments.DoctorId" parent="Appointments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="FK  DoctorId : uniqueidentifier" vertex="1">
+          <mxGeometry height="24" width="320" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointments.AppointmentDate" parent="Appointments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="AppointmentDate : datetime2" vertex="1">
+          <mxGeometry height="24" width="320" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointments.Status" parent="Appointments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Status : nvarchar(20)" vertex="1">
+          <mxGeometry height="24" width="320" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointments.AppointmentType" parent="Appointments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="AppointmentType : nvarchar(20)" vertex="1">
+          <mxGeometry height="24" width="320" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointments.CreatedAt" parent="Appointments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedAt : datetime2" vertex="1">
+          <mxGeometry height="24" width="320" y="174" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointments.CreatedBy" parent="Appointments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="198" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointments.UpdatedAt" parent="Appointments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedAt : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="222" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointments.UpdatedBy" parent="Appointments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="246" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointments.DeletedAt" parent="Appointments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="DeletedAt : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointments.IsDeleted" parent="Appointments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="IsDeleted : bit (default 0)" vertex="1">
+          <mxGeometry height="24" width="320" y="294" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointments.DeletedBy" parent="Appointments" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="DeletedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="318" as="geometry" />
+        </mxCell>
+        <mxCell id="DoctorSchedules" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;" value="DoctorSchedules" vertex="1">
+          <mxGeometry height="318" width="320" x="950" y="1360" as="geometry" />
+        </mxCell>
+        <mxCell id="DoctorSchedules.Id" parent="DoctorSchedules" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;fontStyle=1;" value="PK  Id : uniqueidentifier" vertex="1">
+          <mxGeometry height="24" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="DoctorSchedules.Days" parent="DoctorSchedules" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="Days : nvarchar(200)" vertex="1">
+          <mxGeometry height="24" width="320" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="DoctorSchedules.StartTime" parent="DoctorSchedules" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="StartTime : datetime2" vertex="1">
+          <mxGeometry height="24" width="320" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="DoctorSchedules.EndTime" parent="DoctorSchedules" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="EndTime : datetime2" vertex="1">
+          <mxGeometry height="24" width="320" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="DoctorSchedules.DoctorId" parent="DoctorSchedules" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="FK  DoctorId : uniqueidentifier" vertex="1">
+          <mxGeometry height="24" width="320" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="DoctorSchedules.CreatedAt" parent="DoctorSchedules" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedAt : datetime2" vertex="1">
+          <mxGeometry height="24" width="320" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="DoctorSchedules.CreatedBy" parent="DoctorSchedules" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="CreatedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="174" as="geometry" />
+        </mxCell>
+        <mxCell id="DoctorSchedules.UpdatedAt" parent="DoctorSchedules" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedAt : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="198" as="geometry" />
+        </mxCell>
+        <mxCell id="DoctorSchedules.UpdatedBy" parent="DoctorSchedules" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="UpdatedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="222" as="geometry" />
+        </mxCell>
+        <mxCell id="DoctorSchedules.DeletedAt" parent="DoctorSchedules" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="DeletedAt : datetime2 (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="246" as="geometry" />
+        </mxCell>
+        <mxCell id="DoctorSchedules.IsDeleted" parent="DoctorSchedules" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="IsDeleted : bit (default 0)" vertex="1">
+          <mxGeometry height="24" width="320" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="DoctorSchedules.DeletedBy" parent="DoctorSchedules" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;fontSize=11;" value="DeletedBy : nvarchar(450) (null)" vertex="1">
+          <mxGeometry height="24" width="320" y="294" as="geometry" />
+        </mxCell>
+        <mxCell id="rel0" edge="1" parent="1" source="AspNetRoles" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=10;endSize=12;startSize=12;" target="AspNetRoleClaims" value="RoleId (Cascade)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel1" edge="1" parent="1" source="AspNetRoles" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=10;endSize=12;startSize=12;" target="AspNetUserRoles" value="RoleId (Cascade)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel2" edge="1" parent="1" source="AspNetUsers" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=10;endSize=12;startSize=12;" target="AspNetUserRoles" value="UserId (Cascade)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel3" edge="1" parent="1" source="AspNetUsers" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=10;endSize=12;startSize=12;" target="AspNetUserClaims" value="UserId (Cascade)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel4" edge="1" parent="1" source="AspNetUsers" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=10;endSize=12;startSize=12;" target="AspNetUserLogins" value="UserId (Cascade)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel5" edge="1" parent="1" source="AspNetUsers" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=10;endSize=12;startSize=12;" target="AspNetUserTokens" value="UserId (Cascade)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel6" edge="1" parent="1" source="AspNetUsers" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToOne;startFill=0;endFill=0;fontSize=10;endSize=12;startSize=12;" target="Patients" value="UserId (SetNull)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="910" y="340" />
+              <mxPoint x="910" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel7" edge="1" parent="1" source="AspNetUsers" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToOne;startFill=0;endFill=0;fontSize=10;endSize=12;startSize=12;" target="Receptionists" value="UserId (SetNull)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="630" />
+              <mxPoint x="1010" y="630" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel8" edge="1" parent="1" source="AspNetUsers" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToOne;startFill=0;endFill=0;fontSize=10;endSize=12;startSize=12;" target="Doctors" value="UserId (SetNull)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="850" y="828" />
+              <mxPoint x="850" y="950" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel9" edge="1" parent="1" source="Departments" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=10;endSize=12;startSize=12;" target="Doctors" value="DepartmentId (Restrict)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1460" y="890" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel10" edge="1" parent="1" source="Specialisties" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=10;endSize=12;startSize=12;" target="Doctors" value="SpecialtyId (Restrict)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1515" y="943" />
+              <mxPoint x="1515" y="990" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel11" edge="1" parent="1" source="Doctors" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=10;endSize=12;startSize=12;" target="Appointments" value="DoctorId (Restrict)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel12" edge="1" parent="1" source="Patients" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=10;endSize=12;startSize=12;" target="Appointments" value="PatientId (Restrict)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1840" y="247" />
+              <mxPoint x="1840" y="1371" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel13" edge="1" parent="1" source="Doctors" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=10;endSize=12;startSize=12;" target="DoctorSchedules" value="DoctorId (Restrict)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

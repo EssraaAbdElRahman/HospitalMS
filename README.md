@@ -62,12 +62,40 @@ Identity workflows also use ASP.NET Core Identity managers and its EF Core store
 
 ## Database Design
 
-The following diagram illustrates the main entities and their relationships
-in the Hospital Management System.
+![Hospital Management System ERD](docs/database/HospitalMS-ERD.png)
 
-![Hospital Management System ERD](docs/HospitalMS-ERD.png)
+Editable source: [HospitalMS-ERD.drawio](docs/database/HospitalMS-ERD.drawio)
 
-The editable ERD source is available in `docs/HospitalMS-ERD.drawio`.
+## Application Screenshots
+
+### Dashboard
+
+![Dashboard](docs/screenshots/UserDashboard.png)
+
+### Users Management
+
+![Users](docs/screenshots/Add_User.png)
+
+### Patients Management
+
+![Patients](docs/screenshots/Patients.png)
+
+### Doctors Management
+
+![Doctors](docs/screenshots/DoctorDetails.png)
+
+### Appointment Management
+
+![Appointments](docs/screenshots/Appointments.png)
+
+![Appointments](docs/screenshots/Book_Appointement.png)
+
+### Roles Management
+
+![Roles](docs/screenshots/SetRole.png)
+
+![Roles](docs/screenshots/Role_Details.png)
+
 ## Technology Stack
 
 | Technology | Use in this repository |
