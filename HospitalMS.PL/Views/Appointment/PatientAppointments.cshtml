@@ -1,0 +1,117 @@
+﻿@using HospitalMS.BLL.ModelVM.Appointment
+@using HospitalMS.DAL.Enums
+@model List<AppointmentListItemViewModel>
+
+@{
+    ViewData["Title"] = "Patient Appointments";
+    Layout = "_StaffLayout";
+}
+@functions {
+    string GetStatusClass(AppointmentStatus status)
+    {
+        return status switch
+        {
+            AppointmentStatus.Scheduled => "text-bg-secondary",
+            AppointmentStatus.Check_in => "text-bg-info",
+            AppointmentStatus.Completed => "text-bg-success",
+            AppointmentStatus.Canceled => "text-bg-danger",
+            AppointmentStatus.No_show => "text-bg-warning",
+            _ => "text-bg-secondary"
+        };
+    }
+}
+
+<div class="container-fluid px-3 px-lg-4 py-2">
+
+    <div class="page-heading mb-2">
+        <div class="page-heading-copy">
+            <span class="page-icon">
+                <i class="bi bi-calendar-week" aria-hidden="true"></i>
+            </span>
+            <div>
+                <p class="eyebrow mb-0">Management</p>
+                <h1 class="h3 mb-0">Appointments — @ViewBag.PatientName</h1>
+            </div>
+        </div>
+
+        <div class="heading-actions">
+            <a class="btn btn-primary btn-sm" asp-action="CreateByPatient"
+               asp-permission="Appointments.Create" asp-route-patientId="@ViewBag.PatientId">
+                <i class="bi bi-plus-circle"></i> New Appointment
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] is string successMsg)
+    {
+        <div class="alert alert-success" role="alert">@successMsg</div>
+    }
+    @if (TempData["Error"] is string errorMsg)
+    {
+        <div class="alert alert-danger" role="alert">@errorMsg</div>
+    }
+
+    <section class="panel">
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0 w-100">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Doctor</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Any())
+                    {
+                        @foreach (var a in Model)
+                        {
+                            <tr>
+                                <td>@a.AppointmentDate.ToString("yyyy-MM-dd hh:mm tt")</td>
+                                <td>@a.DoctorName</td>
+                                <td>@a.AppointmentType</td>
+                                <td>
+                                    <span class="badge @GetStatusClass(a.Status)">
+                                        @a.Status.ToString().Replace("_", " ")
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <a asp-action="Details" asp-route-id="@a.Id" asp-permission="Appointments.View"
+                                       class="btn btn-success btn-sm rounded-circle action-btn me-1"
+                                       title="Details" aria-label="Details" style="width:30px;height:30px;padding:0">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+
+                                    @if (a.Status == AppointmentStatus.Scheduled)
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@a.Id" asp-permission="Appointments.Edit"
+                                           class="btn btn-primary btn-sm rounded-circle action-btn me-1"
+                                           title="Edit" aria-label="Edit" style="width:30px;height:30px;padding:0">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@a.Id" asp-permission="Appointments.Delete"
+                                              method="post" class="d-inline"
+                                              onsubmit="return confirm('Are you sure you want to delete this appointment?');">
+                                            <button type="submit" class="btn btn-danger btn-sm rounded-circle action-btn"
+                                                    title="Delete" aria-label="Delete" style="width:30px;height:30px;padding:0">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-4">No appointments found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>

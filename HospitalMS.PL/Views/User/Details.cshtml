@@ -1,0 +1,134 @@
+﻿@using HospitalMS.DAL.Enums
+@model HospitalMS.BLL.ModelVM.UserAccount.UserDetailsViewModel
+@{
+    ViewData["Title"] = "User Details";
+    Layout = "_StaffLayout";
+}
+@functions {
+    string GetStatusClass(AccountStatus status)
+    {
+        return status switch
+        {
+            AccountStatus.Pending => "text-bg-warning",
+            AccountStatus.Active => "text-bg-success",
+            AccountStatus.OnHold => "text-bg-info",
+            AccountStatus.Suspended => "text-bg-danger",
+            _ => "text-bg-secondary"
+        };
+    }
+}
+
+<div class="container-fluid px-3 px-lg-4 py-4">
+    <div class="page-heading">
+        <div class="page-heading-copy">
+            <span class="page-icon"><i class="bi bi-person-lines-fill" aria-hidden="true"></i></span>
+            <div>
+                <p class="eyebrow mb-1">Users</p>
+                <h1 class="h3 mb-1">@Model.FullName</h1>
+                <p class="text-muted mb-0">@Model.Email</p>
+            </div>
+        </div>
+        <div class="heading-actions">
+            <a asp-action="Edit" asp-route-id="@Model.Id" asp-permission="Users.Edit" class="btn btn-primary btn-sm">
+                <i class="bi bi-pencil-fill"></i> Edit
+            </a>
+            <a asp-action="Index" asp-permission="Users.View" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3 mt-1">
+        <!-- Basic Info -->
+        <div class="col-12 col-lg-6">
+            <section class="panel h-100">
+                <div class="panel-header">
+                    <h2 class="h6 mb-0"><i class="bi bi-person-badge"></i> Basic Information</h2>
+                </div>
+                <div class="panel-body p-3">
+                    <dl class="row mb-0">
+                        <dt class="col-5 text-muted">User Type</dt>
+                        <dd class="col-7">@Model.UserType</dd>
+
+                        @if (Model.StaffType.HasValue)
+                        {
+                            <dt class="col-5 text-muted">Staff Type</dt>
+                            <dd class="col-7">@Model.StaffType</dd>
+                        }
+
+                        <dt class="col-5 text-muted">Role</dt>
+                        <dd class="col-7">@Model.RoleName</dd>
+
+                        <dt class="col-5 text-muted">Email Confirmed</dt>
+                        <dd class="col-7">
+                            @if (Model.EmailConfirmed)
+                            {
+                                <span class="badge text-bg-success">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge text-bg-secondary">No</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </section>
+        </div>
+
+        <!-- Account Status -->
+        <div class="col-12 col-lg-6">
+            <section class="panel h-100">
+                <div class="panel-header">
+                    <h2 class="h6 mb-0"><i class="bi bi-shield-check"></i> Account Status</h2>
+                </div>
+                <div class="panel-body p-3">
+                    <dl class="row mb-0">
+                        <dt class="col-5 text-muted">Current Status</dt>
+                        <dd class="col-7">
+                            <span class="badge @GetStatusClass(Model.Status)">@Model.Status</span>
+                        </dd>
+
+                        <dt class="col-5 text-muted">Password Reset</dt>
+                        <dd class="col-7">
+                            @if (Model.PasswordResetStatus == PasswordResetRequestStatus.Pending)
+                            {
+                                <span class="badge text-bg-warning">Pending Request</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">@Model.PasswordResetStatus</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </section>
+        </div>
+
+        <!-- Audit Trail -->
+        <div class="col-12">
+            <section class="panel">
+                <div class="panel-header">
+                    <h2 class="h6 mb-0"><i class="bi bi-clock-history"></i> Audit Trail</h2>
+                </div>
+                <div class="panel-body p-3">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-3 text-muted">Created On</dt>
+                        <dd class="col-sm-3">@Model.CreatedAtUtc.ToString("dd MMM yyyy, hh:mm tt")</dd>
+
+                        <dt class="col-sm-3 text-muted">Created By</dt>
+                        <dd class="col-sm-3">@(Model.CreatedByName ?? "—")</dd>
+
+                        @if (Model.UpdatedAtUtc.HasValue)
+                        {
+                            <dt class="col-sm-3 text-muted">Last Updated</dt>
+                            <dd class="col-sm-3">@Model.UpdatedAtUtc.Value.ToString("dd MMM yyyy, hh:mm tt")</dd>
+
+                            <dt class="col-sm-3 text-muted">Updated By</dt>
+                            <dd class="col-sm-3">@(Model.UpdatedByName ?? "—")</dd>
+                        }
+                    </dl>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

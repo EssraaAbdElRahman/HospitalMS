@@ -1,0 +1,41 @@
+﻿@using HospitalMS.BLL.ModelVM.Patient
+@model List<PatientSearchResultViewModel>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No results found</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Patient Name</th>
+                    <th>National ID</th>
+                    <th>Gender</th>
+                    <th>City</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td>@p.PatientName</td>
+                        <td>@p.NationalId</td>
+                        <td>@p.Gender</td>
+                        <td>@p.City</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-success"
+                               asp-controller="Patient" asp-action="SelectForAppointment"
+                               asp-permission="Appointments.Create" asp-route-patientId="@p.Id">
+                                Book Appointment
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

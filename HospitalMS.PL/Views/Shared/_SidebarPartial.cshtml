@@ -1,0 +1,151 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+<aside class="admin-sidebar" id="adminSidebar" aria-label="Main navigation">
+    <div class="sidebar-header">
+
+        <a class="brand-mark"
+           asp-action="Index"
+           asp-controller="Dashboard"
+           aria-label="User Dashboard">
+
+            <span class="brand-icon">
+                <i class="bi bi-heart-pulse-fill"></i>
+            </span>
+
+            <span class="brand-copy">
+                <span class="brand-title">MedCare HMS</span>
+            </span>
+
+        </a>
+    </div>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <nav class="sidebar-nav">
+
+            <!-- Dashboard -->
+            <a class="nav-link"
+               asp-controller="Dashboard"
+               asp-action="Index">
+
+                <i class="bi bi-speedometer2"></i>
+                <span class="nav-text">Dashboard</span>
+
+            </a>
+
+
+            <!-- Patients -->
+            <a class="nav-link"
+               asp-controller="Patient"
+               asp-action="Index"
+               asp-permission="Patients.View">
+
+                <i class="bi bi-person-lines-fill"></i>
+                <span class="nav-text">Patients</span>
+
+            </a>
+
+
+            <!-- Receptionists -->
+            <a class="nav-link"
+               asp-controller="Receptionist"
+               asp-action="Index"
+               asp-permission="Receptionists.View">
+
+                <i class="bi bi-person-workspace"></i>
+                <span class="nav-text">Receptionists</span>
+
+            </a>
+
+
+            <!-- Doctors -->
+            <a class="nav-link"
+               asp-controller="Doctor"
+               asp-action="Index"
+               asp-permission="Doctors.View">
+
+                <i class="bi bi-person-badge"></i>
+                <span class="nav-text">Doctors</span>
+
+            </a>
+
+
+            <!-- Appointments -->
+
+
+            <a class="nav-link"
+               asp-controller="Appointment"
+               asp-action="Index"
+               asp-permission="Appointments.View">
+
+                <i class="bi bi-calendar3"></i>
+                <span class="nav-text">Appointments</span>
+
+            </a>
+           
+
+
+
+            <!-- ============================= -->
+            <!-- Medical Setup -->
+            <!-- ============================= -->
+            <!-- Departments -->
+            <a class="nav-link"
+               asp-controller="Department"
+               asp-action="Index"
+               asp-permission="Settings.View">
+
+                <i class="bi bi-building"></i>
+                <span class="nav-text">Departments</span>
+
+            </a>
+            <a class="nav-link"
+               asp-controller="Specialty"
+               asp-action="Index"
+               asp-permission="Settings.View">
+
+                <i class="bi bi-heart-pulse"></i>
+                <span class="nav-text">Specialty</span>
+
+            </a>
+            
+
+            <!-- ============================= -->
+            <!-- Users & Security -->
+            <!-- ============================= -->
+            <!-- Users -->
+            <a class="nav-link"
+               asp-controller="User"
+               asp-action="Index"
+               asp-permission="Users.View">
+
+                <i class="bi bi-people"></i>
+                <span class="nav-text">Users</span>
+
+            </a>
+
+            <a class="nav-link"
+               asp-controller="AdminReports"
+               asp-action="Index" 
+               asp-permission="Reports.View" >
+
+                <i class="bi-clipboard2-data"></i>
+                <span class="nav-text">Reports</span>
+
+            </a>
+            @if (User.IsInRole("SuperAdmin"))
+            {
+                <!-- Roles & Permissions -->
+                <a class="nav-link"
+                asp-controller="Role"
+                asp-action="Index">
+
+                    <i class="bi bi-shield-lock"></i>
+                    <span class="nav-text">Roles &amp; Permissions</span>
+
+                </a>
+            }
+        </nav>
+    }
+</aside>

@@ -1,0 +1,184 @@
+﻿@using HospitalMS.BLL.ModelVM.Doctor
+@using HospitalMS.BLL.ModelVM.Pagination
+@model PagedResult<DoctorListItemViewModel>
+
+@{
+    ViewData["Title"] = "Doctors";
+    Layout = "_StaffLayout";
+}
+
+<div class="container-fluid px-3 px-lg-4 py-2">
+
+    <div class="page-heading mb-2">
+        <div class="page-heading-copy">
+            <span class="page-icon"><i class="bi bi-person-badge" aria-hidden="true"></i></span>
+            <div>
+                <p class="eyebrow mb-0">Management</p>
+                <h1 class="h3 mb-0">Doctors</h1>
+            </div>
+        </div>
+
+        <div class="heading-actions">
+            <a class="btn btn-primary btn-sm" asp-action="Create" asp-permission="Doctors.Create">
+                <i class="bi bi-plus-circle" aria-hidden="true"></i> Create Doctor
+            </a>
+        </div>
+    </div>
+
+    <section class="panel">
+
+        <div class="panel-header py-2">
+            <div>
+                <h2 class="h5 mb-0 section-title">
+                    <i class="bi bi-table" aria-hidden="true"></i>
+                    <span>Doctor List</span>
+                </h2>
+                <p class="text-muted mb-0">Total Doctors: @Model.TotalCount</p>
+            </div>
+
+            <form asp-action="Index" method="get" class="d-flex align-items-center gap-1">
+                <input class="form-control form-control-sm table-search"
+                       type="search" name="search" value="@Model.SearchTerm"
+                       placeholder="Search doctors" aria-label="Search doctors">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0 w-100" id="doctorsTable">
+                <thead>
+                    <tr>
+                        <th scope="col" class="py-2">Doctor</th>
+                        <th scope="col" class="text-center py-2">Department</th>
+                        <th scope="col" class="text-center py-2">Specialty</th>
+                        <th scope="col" class="text-center py-2">Experience</th>
+                        <th scope="col" class="text-center py-2">Hire Date</th>
+                        <th scope="col" class="text-center py-2">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Items.Any())
+                    {
+                        @foreach (var doctor in Model.Items)
+                        {
+                            <tr>
+                                <td class="py-2">@doctor.Name</td>
+                                <td class="text-center py-2">@doctor.DepartmentName</td>
+                                <td class="text-center py-2">@doctor.SpecialtyName</td>
+                                <td class="text-center py-2">@doctor.YearsOfExperience</td>
+                                <td class="text-center py-2">@doctor.HireDate.ToString("dd/MM/yyyy")</td>
+                                <td class="text-center py-2">
+                                    <a asp-action="Details" asp-route-id="@doctor.Id" asp-permission="Doctors.View"
+                                       class="btn btn-success btn-sm rounded-circle action-btn me-1"
+                                       title="Details" aria-label="Details" style="width:30px;height:30px;padding:0">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@doctor.Id" asp-permission="Doctors.Edit"
+                                       class="btn btn-primary btn-sm rounded-circle action-btn me-1"
+                                       title="Edit Doctor" aria-label="Edit doctor" style="width:30px;height:30px;padding:0">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a asp-controller="DoctorSchedule" asp-action="Create"
+                                       asp-permission="Doctors.Schedule" asp-route-doctorId="@doctor.Id"
+                                       class="btn btn-info btn-sm rounded-circle action-btn me-1"
+                                       title="Add Schedule" aria-label="Add schedule" style="width:30px;height:30px;padding:0">
+                                        <i class="bi bi-calendar-plus"></i>
+                                    </a>
+                                    <button type="button" asp-permission="Doctors.Delete"
+                                            class="btn btn-danger btn-sm rounded-circle action-btn"
+                                            data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                            data-id="@doctor.Id" data-name="@doctor.Name"
+                                            title="Delete Doctor" aria-label="Delete doctor"
+                                            style="width:30px;height:30px;padding:0">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <i class="bi bi-person-badge text-secondary fs-1"></i>
+                                <h5 class="mt-2 mb-1">No Doctors Found</h5>
+                                <p class="text-muted mb-0">No doctors match your search.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (TempData["Success"] is string successMsg)
+        {
+            <div id="successMessage"
+                 class="position-fixed top-50 start-50 translate-middle bg-success text-white px-4 py-3 rounded-3 shadow-lg"
+                 style="z-index: 9999;">
+                <i class="bi bi-check-circle-fill me-2"></i>@successMsg
+            </div>
+        }
+
+        @if (TempData["Error"] is string errorMsg)
+        {
+            <div id="errorMessage"
+                 class="position-fixed top-50 start-50 translate-middle bg-danger text-white px-4 py-3 rounded-3 shadow-lg"
+                 style="z-index: 9999;">
+                <i class="bi bi-x-circle-fill me-2"></i>@errorMsg
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.SearchTerm))
+        {
+            <div class="text-end mt-2">
+                <a asp-action="Index" class="btn btn-primary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Doctors
+                </a>
+            </div>
+        }
+
+        @await Html.PartialAsync("_Pagination", new PaginationViewModel
+        {
+            CurrentPage = Model.CurrentPage,
+            PageSize = Model.PageSize,
+            TotalCount = Model.TotalCount,
+            TotalPages = Model.TotalPages,
+            SearchTerm = Model.SearchTerm
+        })
+    </section>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                    Delete Doctor
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="mb-2">Are you sure you want to delete this doctor?</p>
+                <strong id="deleteDoctorName"></strong>
+                <p class="text-muted small mt-2 mb-0">The doctor's schedules will be deleted as well.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" name="id" id="deleteDoctorId" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i> Yes, Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/doctor_index.js">    </script>
+}

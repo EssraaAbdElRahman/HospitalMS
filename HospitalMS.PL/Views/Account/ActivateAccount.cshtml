@@ -1,0 +1,40 @@
+﻿@using HospitalMS.BLL.ModelVM.Account
+@model SetPasswordViewModel
+@{
+    ViewData["Title"] = "Activate Account";
+    Layout = "_AuthLayout";
+    ViewData["TitleForHeader"] = "Set your password";
+}
+<form asp-action="ActivateAccount" method="post" class="needs-validation" novalidate>
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="Email" />
+    <input type="hidden" asp-for="Token" />
+
+    <div class="mb-4">
+        <p class="eyebrow mb-1">Secure Access</p>
+        <h1 class="h3 mb-1">Activate Account</h1>
+        <p class="text-muted mb-0">Choose a password to activate your account</p>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" asp-for="Password">New Password</label>
+        <input class="form-control" asp-for="Password" type="password">
+        <span asp-validation-for="Password" class="invalid-feedback"></span>
+    </div>
+
+    <div class="mb-4">
+        <label class="form-label" asp-for="ConfirmPassword">Confirm Password</label>
+        <input class="form-control" asp-for="ConfirmPassword" type="password">
+        <span asp-validation-for="ConfirmPassword" class="invalid-feedback"></span>
+    </div>
+
+    <button class="btn btn-primary w-100" type="submit">
+        <i class="bi bi-shield-check" aria-hidden="true"></i> Activate Account
+    </button>
+</form>
+<div class="auth-footer">Already activated? <a asp-controller="Account" asp-action="Login">Back to login</a></div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

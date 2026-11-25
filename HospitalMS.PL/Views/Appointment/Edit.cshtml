@@ -1,0 +1,231 @@
+﻿@using HospitalMS.BLL.ModelVM.Appointment
+@using HospitalMS.DAL.Enums
+@model UpdateAppointmentViewModel
+
+@{
+    ViewData["Title"] = "Edit Appointment";
+    Layout = "_StaffLayout";
+    var currentSlotText = Model.AppointmentTime.ToString(@"hh\:mm");
+}
+
+<div class="container-fluid px-3 px-lg-4 py-2">
+
+    <div class="page-heading mb-2">
+        <div class="page-heading-copy">
+            <span class="page-icon">
+                <i class="bi bi-calendar-plus" aria-hidden="true"></i>
+            </span>
+            <div>
+                <p class="eyebrow mb-0">Management</p>
+                <h1 class="h3 mb-0">Edit Appointment</h1>
+            </div>
+        </div>
+    </div>
+
+    <section class="panel">
+
+        @if (!string.IsNullOrEmpty(Model.PatientName))
+        {
+            <div class="panel-header py-2">
+                <h2 class="h5 mb-0 section-title">
+                    <i class="bi bi-person-badge"></i>
+                    <span>@Model.PatientName</span>
+                </h2>
+            </div>
+        }
+
+        <div class="p-3">
+            <form asp-action="Edit" method="post" id="appointmentForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="PatientId" />
+                <input type="hidden" asp-for="PatientName" />
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label asp-for="AppointmentType" class="form-label">Appointment Type</label>
+                        <select asp-for="AppointmentType" asp-items="Html.GetEnumSelectList<AppointmentType>()" class="form-select"></select>
+                        <span asp-validation-for="AppointmentType" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Status" class="form-label">Status</label>
+                        <select asp-for="Status" asp-items="Html.GetEnumSelectList<AppointmentStatus>()" class="form-select"></select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="DepartmentId" class="form-label">Department</label>
+                        <select asp-for="DepartmentId" asp-items="ViewBag.Departments" class="form-select" id="DepartmentId">
+                            <option value="">-- Select Department --</option>
+                        </select>
+                        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="DoctorId" class="form-label">Doctor</label>
+                        <select asp-for="DoctorId" class="form-select" id="DoctorId" disabled>
+                            <option value="">-- Loading... --</option>
+                        </select>
+                        <span asp-validation-for="DoctorId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="appointmentDate">Date</label>
+                        <input type="date" id="appointmentDate" name="AppointmentDate" class="form-control"
+                               min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                               value="@Model.AppointmentDate.ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="availableSlots">Available Time</label>
+                        <select id="availableSlots" name="AppointmentTime" class="form-select">
+                            <option value="@currentSlotText">@currentSlotText (Current)</option>
+                        </select>
+                        <span asp-validation-for="AppointmentTime" class="text-danger"></span>
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancel</a>
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-check-circle"></i> Save Changes
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const urls = {
+            doctors: '@Url.Action("GetDoctorsByDepartment", "Appointment")',
+            slots: '@Url.Action("GetAvailableSlots", "Appointment")'
+        };
+
+        const currentDoctorId = @Html.Raw(Json.Serialize(Model.DoctorId));
+        const currentSlot = @Html.Raw(Json.Serialize(currentSlotText));
+        const currentDateStr = @Html.Raw(Json.Serialize(Model.AppointmentDate.ToString("yyyy-MM-dd")));
+
+        const departmentSelect = document.getElementById('DepartmentId');
+        const doctorSelect = document.getElementById('DoctorId');
+        const dateInput = document.getElementById('appointmentDate');
+        const slotsSelect = document.getElementById('availableSlots');
+
+        function setSlotsMessage(text) {
+            slotsSelect.innerHTML = '';
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = text;
+            slotsSelect.appendChild(opt);
+        }
+
+        async function loadDoctorsForDepartment(isInitialLoad) {
+            const departmentId = departmentSelect.value;
+
+            doctorSelect.innerHTML = '<option value="">-- Loading... --</option>';
+            doctorSelect.disabled = true;
+
+            if (!isInitialLoad) setSlotsMessage('-- Select doctor and date first --');
+
+            if (!departmentId) {
+                doctorSelect.innerHTML = '<option value="">-- Select Department First --</option>';
+                return;
+            }
+
+            try {
+                const res = await fetch(`${urls.doctors}?departmentId=${encodeURIComponent(departmentId)}`);
+
+                if (!res.ok) {
+                    doctorSelect.innerHTML = '<option value="">-- Failed to load doctors --</option>';
+                    return;
+                }
+
+                const doctors = await res.json();
+
+                if (doctors.length === 0) {
+                    doctorSelect.innerHTML = '<option value="">-- No doctors in this department --</option>';
+                    return;
+                }
+
+                doctorSelect.innerHTML = '<option value="">-- Select Doctor --</option>';
+                doctors.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.id;
+                    opt.textContent = d.name;
+                    doctorSelect.appendChild(opt);
+                });
+
+                doctorSelect.disabled = false;
+
+                if (isInitialLoad && currentDoctorId) {
+                    doctorSelect.value = currentDoctorId;
+                    await loadSlots(true);
+                }
+            } catch {
+                doctorSelect.innerHTML = '<option value="">-- Failed to load doctors --</option>';
+            }
+        }
+
+        async function loadSlots(isInitialLoad = false) {
+            const doctorId = doctorSelect.value;
+            const date = dateInput.value;
+
+            if (!doctorId || !date) return;
+
+            try {
+                const response = await fetch(
+                    `${urls.slots}?doctorId=${encodeURIComponent(doctorId)}&date=${encodeURIComponent(date)}`);
+
+                if (!response.ok) {
+                    setSlotsMessage('Failed to load slots');
+                    return;
+                }
+
+                const slots = await response.json();
+
+                const isOriginal = isInitialLoad
+                    && date === currentDateStr
+                    && doctorId === currentDoctorId;
+
+                if (isOriginal && currentSlot && !slots.includes(currentSlot)) {
+                    slots.push(currentSlot);
+                    slots.sort();
+                }
+
+                if (slots.length === 0) {
+                    setSlotsMessage('No slots available');
+                    return;
+                }
+
+                setSlotsMessage('-- Select Time --');
+                slots.forEach(slot => {
+                    const option = document.createElement('option');
+                    option.value = slot;
+                    option.textContent = (isOriginal && slot === currentSlot) ? `${slot} (Current)` : slot;
+                    slotsSelect.appendChild(option);
+                });
+
+                if (isOriginal && currentSlot) slotsSelect.value = currentSlot;
+            } catch {
+                setSlotsMessage('Failed to load slots');
+            }
+        }
+
+        departmentSelect.addEventListener('change', () => loadDoctorsForDepartment(false));
+        doctorSelect.addEventListener('change', () => loadSlots(false));
+        dateInput.addEventListener('change', () => loadSlots(false));
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (departmentSelect.value) loadDoctorsForDepartment(true);
+        });
+    </script>
+}

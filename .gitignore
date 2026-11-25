@@ -1,0 +1,91 @@
+
+# ==============================
+# .NET Build Output
+# ==============================
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]rtifacts/
+
+# ==============================
+# Visual Studio
+# ==============================
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.cache
+
+# ==============================
+# JetBrains Rider
+# ==============================
+.idea/
+*.sln.iml
+
+# ==============================
+# Test Results & Coverage
+# ==============================
+[Tt]est[Rr]esults/
+*.trx
+coverage/
+coverage.*
+*.coverage
+*.coveragexml
+
+# ==============================
+# Logs
+# ==============================
+*.log
+logs/
+
+# ==============================
+# Secrets & Local Environment
+# ==============================
+.env
+.env.*
+!.env.example
+secrets.json
+appsettings.Local.json
+
+# ==============================
+# Local Database Files
+# ==============================
+*.mdf
+*.ldf
+*.ndf
+*.bak
+*.trn
+
+# ==============================
+# NuGet Packages
+# ==============================
+*.nupkg
+*.snupkg
+
+# ==============================
+# Publish Output
+# ==============================
+publish/
+Published/
+
+# ==============================
+# Frontend Dependencies
+# ==============================
+node_modules/
+
+# ==============================
+# Operating System Files
+# ==============================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==============================
+# Temporary Files
+# ==============================
+*.tmp
+*.temp

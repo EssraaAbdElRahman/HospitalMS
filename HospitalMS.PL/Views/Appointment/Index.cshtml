@@ -1,0 +1,449 @@
+﻿@using HospitalMS.DAL.Enums
+@model HospitalMS.BLL.ModelVM.Appointment.AppointmentIndexViewModel
+@{
+    ViewData["Title"] = "Appointments";
+    Layout = "_StaffLayout";
+
+    bool isToday = Model.SelectedDate.Date == DateTime.Today;
+}
+@functions {
+    string GetStatusClass(AppointmentStatus status)
+    {
+        return status switch
+        {
+            AppointmentStatus.Scheduled => "text-bg-secondary",
+            AppointmentStatus.Check_in => "text-bg-info",
+            AppointmentStatus.Completed => "text-bg-success",
+            AppointmentStatus.Canceled => "text-bg-danger",
+            AppointmentStatus.No_show => "text-bg-warning",
+            _ => "text-bg-secondary"
+        };
+    }
+}
+
+<div class="container-fluid px-3 px-lg-4 py-4">
+    @* بيتقري بالـ JS وبيتبعت مع طلبات الـ AJAX *@
+    @Html.AntiForgeryToken()
+
+    <div class="page-heading">
+        <div class="page-heading-copy">
+            <span class="page-icon"><i class="bi bi-calendar3" aria-hidden="true"></i></span>
+            <div>
+                <p class="eyebrow mb-1">Reception</p>
+                <h1 class="h3 mb-1">
+                    @(isToday ? "Today's Appointments" : $"Appointments — {Model.SelectedDate:dd MMM yyyy}")
+                </h1>
+                <p class="text-muted mb-0">Manage patient check-ins and appointment status.</p>
+            </div>
+        </div>
+        <div class="heading-actions">
+            <a class="btn btn-primary btn-sm" asp-action="Create" asp-permission="Appointments.Create">
+                <i class="bi bi-calendar-plus" aria-hidden="true"></i> Book Appointment
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] is string successMsg)
+    {
+        <div class="alert alert-success mt-3" role="alert">@successMsg</div>
+    }
+    @if (TempData["Error"] is string errorMsg)
+    {
+        <div class="alert alert-danger mt-3" role="alert">@errorMsg</div>
+    }
+
+    <!-- Summary -->
+    <section class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 mt-1">
+        <div class="col">
+            <article class="metric-card metric-primary">
+                <div class="metric-top">
+                    <span class="metric-label">Total</span>
+                    <span class="metric-icon"><i class="bi bi-calendar3" aria-hidden="true"></i></span>
+                </div>
+                <div class="metric-value">@Model.TotalCount</div>
+            </article>
+        </div>
+        <div class="col">
+            <article class="metric-card metric-purple">
+                <div class="metric-top">
+                    <span class="metric-label">Scheduled</span>
+                    <span class="metric-icon"><i class="bi bi-hourglass-split" aria-hidden="true"></i></span>
+                </div>
+                <div class="metric-value">@Model.ScheduledCount</div>
+            </article>
+        </div>
+        <div class="col">
+            <article class="metric-card metric-success">
+                <div class="metric-top">
+                    <span class="metric-label">Checked In</span>
+                    <span class="metric-icon"><i class="bi bi-person-check" aria-hidden="true"></i></span>
+                </div>
+                <div class="metric-value">@Model.CheckedInCount</div>
+            </article>
+        </div>
+        <div class="col">
+            <article class="metric-card metric-warning">
+                <div class="metric-top">
+                    <span class="metric-label">Completed</span>
+                    <span class="metric-icon"><i class="bi bi-check-circle" aria-hidden="true"></i></span>
+                </div>
+                <div class="metric-value">@Model.CompletedCount</div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Appointments table -->
+    <section class="panel mt-3">
+        <div class="panel-header flex-column flex-lg-row align-items-lg-start gap-2">
+            <h2 class="h6 mb-0 section-title">
+                <i class="bi bi-list-ul" aria-hidden="true"></i>
+                <span>Appointments</span>
+            </h2>
+
+            <form asp-action="Index" method="get" class="d-flex flex-wrap align-items-center gap-2">
+                <input type="date" name="date" class="form-control form-control-sm"
+                       style="width: 155px;" aria-label="Date"
+                       value="@Model.SelectedDate.ToString("yyyy-MM-dd")">
+
+                <select name="doctorId" class="form-select form-select-sm" style="width: 170px;"
+                        aria-label="Doctor" asp-items="ViewBag.Doctors">
+                    <option value="">-- All Doctors --</option>
+                </select>
+
+                <select name="status" class="form-select form-select-sm" style="width: 150px;" aria-label="Status">
+                    <option value="">-- All Statuses --</option>
+                    @foreach (var s in Enum.GetValues<AppointmentStatus>())
+                    {
+                        <option value="@s" selected="@(Model.Status == s)">@s.ToString().Replace("_", " ")</option>
+                    }
+                </select>
+
+                <input type="text" name="searchTerm" class="form-control form-control-sm"
+                       style="width: 170px;" aria-label="Search patient"
+                       placeholder="Search patient name..."
+                       value="@Model.SearchTerm" />
+
+                <button type="submit" class="btn btn-outline-secondary btn-sm" aria-label="Filter">
+                    <i class="bi bi-search"></i>
+                </button>
+
+                @if (!isToday || Model.DoctorId.HasValue || Model.Status.HasValue || !string.IsNullOrWhiteSpace(Model.SearchTerm))
+                {
+                    <a asp-action="Index" class="btn btn-primary btn-sm" title="Clear filters" aria-label="Clear filters">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                }
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">Time</th>
+                        <th scope="col">Patient</th>
+                        <th scope="col">Doctor</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="text-center">Quick Actions</th>
+                        <th scope="col" class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Appointments.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                No appointments match the current filters.
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var appt in Model.Appointments.OrderBy(a => a.AppointmentDate))
+                    {
+                        <tr data-id="@appt.Id">
+                            <td>@appt.AppointmentDate.ToString("hh:mm tt")</td>
+                            <td>@appt.PatientName</td>
+                            <td>@appt.DoctorName</td>
+                            <td>@appt.AppointmentType</td>
+                            <td class="status-cell">
+                                <span class="badge @GetStatusClass(appt.Status) status-badge">
+                                    @appt.Status.ToString().Replace("_", " ")
+                                </span>
+                            </td>
+
+                            <td class="text-center quick-actions-cell">
+                                <a asp-action="Details" asp-route-id="@appt.Id"
+                                   class="btn btn-success btn-sm rounded-circle action-btn me-1"
+                                   title="Details" aria-label="Details"
+                                   style="width:30px;height:30px;padding:0">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+
+                                @if (appt.Status == AppointmentStatus.Scheduled)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@appt.Id" asp-permission="Appointments.Edit"
+                                       class="btn btn-primary btn-sm rounded-circle action-btn edit-icon-btn"
+                                       title="Edit Appointment" aria-label="Edit appointment"
+                                       style="width:30px;height:30px;padding:0">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                }
+                            </td>
+
+                            <td class="text-end action-cell">
+                                @if (appt.Status == AppointmentStatus.Scheduled)
+                                {
+                                    <div class="appointment-actions">
+                                        <div class="btn-group action-group" role="group">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-primary table-action-btn check-in-btn"
+                                                    data-id="@appt.Id">
+                                                <i class="bi bi-box-arrow-in-right"></i>
+                                                <span>Check In</span>
+                                            </button>
+
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary table-action-btn dropdown-toggle dropdown-toggle-split"
+                                                    data-bs-toggle="dropdown" aria-expanded="false"
+                                                    title="More actions">
+                                                <span class="visually-hidden">More actions</span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li>
+                                                    <button type="button" class="dropdown-item"
+                                                            data-bs-toggle="modal" data-bs-target="#noShowModal"
+                                                            data-id="@appt.Id" data-name="@appt.PatientName">
+                                                        <i class="bi bi-person-x me-1"></i> No Show
+                                                    </button>
+                                                </li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li>
+                                                    <button type="button" class="dropdown-item text-danger"
+                                                            data-bs-toggle="modal" data-bs-target="#cancelModal"
+                                                            data-id="@appt.Id" data-name="@appt.PatientName">
+                                                        <i class="bi bi-x-circle me-1"></i> Cancel
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<!-- No Show Confirmation Modal -->
+<div class="modal fade" id="noShowModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                    Mark as No Show
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="mb-2">Are you sure you want to mark this appointment as No Show?</p>
+                <strong id="noShowPatientName"></strong>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-warning" id="confirmNoShowBtn">
+                    <i class="bi bi-person-x me-1"></i> Yes, No Show
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Appointment Confirmation Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                    Cancel Appointment
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="mb-2">Are you sure you want to cancel this appointment?</p>
+                <strong id="cancelPatientName"></strong>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Back</button>
+                <button type="button" class="btn btn-danger" id="confirmCancelBtn">
+                    <i class="bi bi-x-circle me-1"></i> Yes, Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .appointment-actions {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .table-action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        white-space: nowrap;
+        min-width: 92px;
+        height: 30px;
+        font-size: 0.8rem;
+        padding: 0.3rem 0.65rem;
+        line-height: 1.2;
+    }
+
+        .table-action-btn i {
+            font-size: 0.85rem;
+        }
+
+    .action-group .check-in-btn {
+        min-width: 100px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .action-group .dropdown-toggle-split {
+        min-width: auto;
+        width: 30px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+        .action-group .dropdown-toggle-split::after {
+            margin-left: 0;
+        }
+
+    .status-badge {
+        font-weight: 500;
+        font-size: 0.72rem;
+        padding: 0.4em 0.65em;
+    }
+
+    .quick-actions-cell .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        const urls = {
+            checkIn: '@Url.Action("CheckInAjax", "Appointment")',
+            noShow: '@Url.Action("NoShowAjax", "Appointment")',
+            cancel: '@Url.Action("CancelAjax", "Appointment")'
+        };
+
+        async function postAction(url, id) {
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('__RequestVerificationToken',
+                document.querySelector('input[name="__RequestVerificationToken"]')?.value || '');
+
+            const res = await fetch(url, { method: 'POST', body: formData });
+            return res.json();
+        }
+
+        function updateRowAfterStatusChange(row, statusText, badgeClass) {
+            const statusBadge = row.querySelector('.status-badge');
+            statusBadge.className = `badge ${badgeClass} status-badge`;
+            statusBadge.textContent = statusText;
+
+            const editIcon = row.querySelector('.edit-icon-btn');
+            if (editIcon) editIcon.remove();
+
+            row.querySelector('.action-cell').innerHTML = '';
+        }
+
+        // ===== Check In =====
+        document.querySelectorAll('.check-in-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const row = btn.closest('tr');
+                const originalHtml = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+                try {
+                    const data = await postAction(urls.checkIn, btn.dataset.id);
+
+                    if (data.success) {
+                        updateRowAfterStatusChange(row, 'Check in', 'text-bg-info');
+                    } else {
+                        alert(data.message);
+                        btn.disabled = false;
+                        btn.innerHTML = originalHtml;
+                    }
+                } catch {
+                    alert('An error occurred.');
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }
+            });
+        });
+
+        function setupStatusModal(cfg) {
+            const modalEl = document.getElementById(cfg.modalId);
+            const modal = new bootstrap.Modal(modalEl);
+            const confirmBtn = document.getElementById(cfg.confirmId);
+            let targetId = null;
+
+            modalEl.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget;
+                targetId = button.getAttribute('data-id');
+                document.getElementById(cfg.nameId).textContent = button.getAttribute('data-name');
+            });
+
+            confirmBtn.addEventListener('click', async () => {
+                if (!targetId) return;
+
+                const originalHtml = confirmBtn.innerHTML;
+                confirmBtn.disabled = true;
+                confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+                const row = document.querySelector(`tr[data-id="${targetId}"]`);
+
+                try {
+                    const data = await postAction(cfg.url, targetId);
+
+                    if (data.success) {
+                        updateRowAfterStatusChange(row, cfg.statusText, cfg.badgeClass);
+                        modal.hide();
+                    } else {
+                        alert(data.message);
+                    }
+                } catch {
+                    alert('An error occurred.');
+                } finally {
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = originalHtml;
+                }
+            });
+        }
+
+        setupStatusModal({
+            modalId: 'noShowModal', confirmId: 'confirmNoShowBtn', nameId: 'noShowPatientName',
+            url: urls.noShow, statusText: 'No show', badgeClass: 'text-bg-warning'
+        });
+
+        setupStatusModal({
+            modalId: 'cancelModal', confirmId: 'confirmCancelBtn', nameId: 'cancelPatientName',
+            url: urls.cancel, statusText: 'Canceled', badgeClass: 'text-bg-danger'
+        });
+    </script>
+}

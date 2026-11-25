@@ -1,0 +1,118 @@
+﻿@using HospitalMS.BLL.ModelVM.Patient
+@using HospitalMS.DAL.Enums
+@model NewPatientViewModel
+
+<div class="modal fade" id="quickAddPatientModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="quickAddPatientForm">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-person-plus"></i> Add New Patient
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="quickAddPatientError" class="alert alert-danger py-2" style="display:none;"></div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="PatientName" class="form-label"></label>
+                            <input asp-for="PatientName" class="form-control" maxlength="100" />
+                            <span asp-validation-for="PatientName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="NationalId" class="form-label"></label>
+                            <input asp-for="NationalId" class="form-control" maxlength="14" />
+                            <span asp-validation-for="NationalId" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="Gender" class="form-label"></label>
+                            <select asp-for="Gender" asp-items="Html.GetEnumSelectList<Gender>()" class="form-select"></select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="Country" class="form-label"></label>
+                            <input asp-for="Country" class="form-control" maxlength="100" />
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="City" class="form-label"></label>
+                            <input asp-for="City" class="form-control" maxlength="100" />
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Address" class="form-label"></label>
+                            <input asp-for="Address" class="form-control" maxlength="100" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Notes" class="form-label"></label>
+                            <input asp-for="Notes" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-end">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="qp_SaveBtn">
+                        <i class="bi bi-check-circle"></i> Save Patient
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const form = document.getElementById('quickAddPatientForm');
+        if (!form) return;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const errorBox = document.getElementById('quickAddPatientError');
+            errorBox.style.display = 'none';
+
+            const formData = new FormData(form);
+
+            const res = await fetch('/Appointment/QuickCreatePatient', {
+                method: 'POST',
+                body: formData
+            });
+
+            let data;
+            try {
+                data = await res.json();
+            } catch {
+                return showQpError('Unexpected server error. Please try again.');
+            }
+
+            if (!data.success) {
+                return showQpError((data.errors && data.errors.join(', ')) || 'Failed to add patient.');
+            }
+
+            document.dispatchEvent(new CustomEvent('patientQuickAdded', { detail: data }));
+
+            const modalEl = document.getElementById('quickAddPatientModal');
+            bootstrap.Modal.getInstance(modalEl)?.hide();
+
+            form.reset();
+
+            function showQpError(msg) {
+                errorBox.textContent = msg;
+                errorBox.style.display = 'block';
+            }
+        });
+    })();
+</script>

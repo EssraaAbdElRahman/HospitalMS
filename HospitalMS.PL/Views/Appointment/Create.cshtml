@@ -1,0 +1,465 @@
+﻿@using HospitalMS.BLL.ModelVM.Appointment
+@using HospitalMS.DAL.Enums
+@model NewAppointmentViewModel
+
+@{
+    ViewData["Title"] = "Book Appointment";
+    Layout = "_StaffLayout";
+    bool hasPatient = Model.PatientId != Guid.Empty;
+}
+
+<div class="container-fluid px-3 px-lg-4 py-2">
+
+    <div class="page-heading mb-2">
+        <div class="page-heading-copy">
+            <span class="page-icon">
+                <i class="bi bi-calendar-plus" aria-hidden="true"></i>
+            </span>
+            <div>
+                <p class="eyebrow mb-0">Management</p>
+                <h1 class="h3 mb-0">Book Appointment</h1>
+            </div>
+        </div>
+    </div>
+
+    <section class="panel">
+
+        <div class="panel-header py-2">
+            <h2 class="h5 mb-0 section-title">
+                <i class="bi bi-person-badge"></i>
+                <span id="patientHeaderName">@(hasPatient ? Model.PatientName : "No patient selected")</span>
+            </h2>
+            <p class="text-muted mb-0" id="patientHeaderMeta">
+                @if (hasPatient)
+                {
+                    <text>National ID: @Model.NationalId &nbsp;|&nbsp; Gender: @Model.Gender</text>
+                }
+            </p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 m-3 px-3 py-2 rounded"
+             style="background-color: #f8f9fa; border: 1px solid #dee2e6; color: #495057;">
+            <i class="bi bi-info-circle text-primary fs-5"></i>
+            <span id="appointmentInfoNotice">
+                Please select a <strong>Patient</strong> and <strong>Department</strong> first to enable doctor and available schedule slots.
+            </span>
+        </div>
+
+        <div class="p-3">
+            <form asp-action="Create" method="post" id="appointmentForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                <input type="hidden" asp-for="PatientId" id="PatientId" />
+                <input type="hidden" asp-for="PatientName" id="PatientName" />
+                <input type="hidden" asp-for="NationalId" id="NationalId" />
+                <input type="hidden" asp-for="Gender" id="Gender" />
+
+                <!-- STEP 1: Patient Selection -->
+                @if (hasPatient)
+                {
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8">
+                            <label class="form-label">Patient</label>
+                            <input type="text" class="form-control" value="@Model.PatientName" disabled />
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row g-3 mb-3" id="patientSearchRow">
+                        <div class="col-md-9">
+                            <label class="form-label">Select Patient</label>
+                            <div class="dropdown-combobox">
+                                <div class="combobox-input-wrapper">
+                                    <input type="text"
+                                           id="patientSearchInput"
+                                           class="form-control"
+                                           placeholder="Click to select or type to search..."
+                                           autocomplete="off" />
+                                    <button type="button" class="combobox-arrow-btn" id="comboboxToggleBtn"
+                                            tabindex="-1" aria-label="Toggle patients list">
+                                        <i class="bi bi-chevron-down"></i>
+                                    </button>
+                                </div>
+                                <div id="patientSearchResults" class="dropdown-menu-custom"></div>
+                            </div>
+                            <span class="text-danger" id="patientSelectError" style="display:none;">
+                                Please select a patient from the list.
+                            </span>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="button" class="btn btn-primary w-100"
+                                    data-bs-toggle="modal" data-bs-target="#quickAddPatientModal">
+                                <i class="bi bi-plus-circle"></i> New Patient
+                            </button>
+                        </div>
+                    </div>
+                }
+
+                <div class="row g-3">
+                    <!-- STEP 2: Department -->
+                    <div class="col-md-6">
+                        <label asp-for="DepartmentId" class="form-label">Department</label>
+                        <select asp-for="DepartmentId" asp-items="ViewBag.Departments" class="form-select" id="DepartmentId">
+                            <option value="" disabled selected hidden>-- Select Department --</option>
+                        </select>
+                        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                    </div>
+
+                    <!-- STEP 3: Doctor (Filtered) -->
+                    <div class="col-md-6">
+                        <label asp-for="DoctorId" class="form-label">Doctor</label>
+                        <select asp-for="DoctorId" class="form-select" id="DoctorId" disabled>
+                            <option value="" disabled selected hidden>-- Select Department First --</option>
+                        </select>
+                        <span asp-validation-for="DoctorId" class="text-danger"></span>
+                    </div>
+
+                    <!-- STEP 4: Appointment Type -->
+                    <div class="col-md-6">
+                        <label asp-for="AppointmentType" class="form-label">Appointment Type</label>
+                        <select asp-for="AppointmentType" asp-items="Html.GetEnumSelectList<AppointmentType>()" class="form-select"></select>
+                        <span asp-validation-for="AppointmentType" class="text-danger"></span>
+                    </div>
+
+                    <!-- STEP 5: Date -->
+                    <div class="col-md-3">
+                        <label class="form-label" for="appointmentDate">Date</label>
+                        <input type="date" id="appointmentDate" name="AppointmentDate" class="form-control"
+                               min="@DateTime.Today.ToString("yyyy-MM-dd")" disabled />
+                        <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                    </div>
+
+                    <!-- STEP 6: Available Time Slots -->
+                    <div class="col-md-3">
+                        <label class="form-label" for="availableSlots">Available Time</label>
+                        <select id="availableSlots" name="AppointmentTime" class="form-select" disabled>
+                            <option value="" disabled selected hidden>-- Select Date First --</option>
+                        </select>
+                        <span asp-validation-for="AppointmentTime" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-2 justify-content-end">
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Save Appointment
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </section>
+</div>
+
+@if (!hasPatient)
+{
+    <partial name="_QuickAddPatientModal" model="new HospitalMS.BLL.ModelVM.Patient.NewPatientViewModel()" />
+}
+
+<style>
+    .dropdown-combobox {
+        position: relative;
+    }
+
+    .combobox-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+        .combobox-input-wrapper input {
+            padding-right: 36px;
+        }
+
+    .combobox-arrow-btn {
+        position: absolute;
+        right: 6px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #6c757d;
+        padding: 4px 6px;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .dropdown-menu-custom {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 1050;
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+        max-height: 260px;
+        overflow-y: auto;
+        margin-top: 2px;
+    }
+
+        .dropdown-menu-custom.show {
+            display: block;
+        }
+
+    .dropdown-item-custom {
+        padding: 0.6rem 1rem;
+        cursor: pointer;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+        .dropdown-item-custom:hover, .dropdown-item-custom.active {
+            background-color: #f0f4ff;
+        }
+
+        .dropdown-item-custom .patient-name {
+            font-weight: 500;
+        }
+
+        .dropdown-item-custom .patient-meta {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+    .dropdown-empty {
+        padding: 0.6rem 1rem;
+        color: #6c757d;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const urls = {
+            doctors: '@Url.Action("GetDoctorsByDepartment", "Appointment")',
+            slots: '@Url.Action("GetAvailableSlots", "Appointment")',
+            patients: '@Url.Action("SearchPatients", "Appointment")'
+        };
+        const EMPTY_GUID = '00000000-0000-0000-0000-000000000000';
+
+        const departmentSelect = document.getElementById('DepartmentId');
+        const doctorSelect = document.getElementById('DoctorId');
+        const dateInput = document.getElementById('appointmentDate');
+        const slotsSelect = document.getElementById('availableSlots');
+
+        function setSelectMessage(select, text, disabled) {
+            select.innerHTML = '';
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.disabled = true;
+            opt.selected = true;
+            opt.hidden = true;
+            opt.textContent = text;
+            select.appendChild(opt);
+            select.disabled = disabled;
+        }
+
+        function fillSelect(select, items, placeholder) {
+            setSelectMessage(select, placeholder, false);
+            items.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.value;
+                opt.textContent = item.text;
+                select.appendChild(opt);
+            });
+        }
+
+        function resetDateAndSlots() {
+            dateInput.value = '';
+            dateInput.disabled = true;
+            setSelectMessage(slotsSelect, '-- Select Date First --', true);
+        }
+
+        // ================== Cascading Dropdowns ==================
+        departmentSelect.addEventListener('change', async function () {
+            const deptId = this.value;
+            setSelectMessage(doctorSelect, '-- Loading Doctors... --', true);
+            resetDateAndSlots();
+
+            if (!deptId) {
+                setSelectMessage(doctorSelect, '-- Select Department First --', true);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${urls.doctors}?departmentId=${encodeURIComponent(deptId)}`);
+                const doctors = await response.json();
+
+                if (!doctors || doctors.length === 0) {
+                    setSelectMessage(doctorSelect, 'No doctors available in this department', true);
+                    return;
+                }
+
+                fillSelect(doctorSelect,
+                    doctors.map(d => ({ value: d.id, text: d.name })),
+                    '-- Select Doctor --');
+            } catch {
+                setSelectMessage(doctorSelect, 'Error loading doctors', true);
+            }
+        });
+
+        doctorSelect.addEventListener('change', function () {
+            resetDateAndSlots();
+            if (this.value) dateInput.disabled = false;
+        });
+
+        dateInput.addEventListener('change', async function () {
+            const doctorId = doctorSelect.value;
+            const date = this.value;
+
+            setSelectMessage(slotsSelect, '-- Loading Slots... --', true);
+
+            if (!doctorId || !date) return;
+
+            try {
+                const response = await fetch(
+                    `${urls.slots}?doctorId=${encodeURIComponent(doctorId)}&date=${encodeURIComponent(date)}`);
+                const slots = await response.json();
+
+                if (!slots || slots.length === 0) {
+                    setSelectMessage(slotsSelect, 'No slots available on this date', true);
+                    return;
+                }
+
+                fillSelect(slotsSelect,
+                    slots.map(s => ({ value: s, text: s })),
+                    '-- Select Time --');
+            } catch {
+                setSelectMessage(slotsSelect, 'Error loading slots', true);
+            }
+        });
+
+        // ================== Patient Searchable Dropdown ==================
+        const searchInput = document.getElementById('patientSearchInput');
+        const resultsBox = document.getElementById('patientSearchResults');
+        const toggleBtn = document.getElementById('comboboxToggleBtn');
+
+        if (searchInput) {
+            let debounceTimer;
+            let currentIndex = -1;
+            let searchRequestId = 0;
+
+            async function runSearch(term) {
+                const myRequestId = ++searchRequestId;
+                const res = await fetch(`${urls.patients}?term=${encodeURIComponent(term)}`);
+                const data = await res.json();
+                if (myRequestId !== searchRequestId) return; // نتيجة قديمة
+                renderResults(data);
+            }
+
+            function renderResults(patients) {
+                resultsBox.innerHTML = '';
+                currentIndex = -1;
+
+                if (patients.length === 0) {
+                    const empty = document.createElement('div');
+                    empty.className = 'dropdown-empty';
+                    empty.textContent = 'No results found';
+                    resultsBox.appendChild(empty);
+                    resultsBox.classList.add('show');
+                    return;
+                }
+
+                patients.forEach(p => {
+                    const item = document.createElement('div');
+                    item.className = 'dropdown-item-custom';
+
+                    const nameEl = document.createElement('div');
+                    nameEl.className = 'patient-name';
+                    nameEl.textContent = p.name;
+
+                    const metaEl = document.createElement('div');
+                    metaEl.className = 'patient-meta';
+                    metaEl.textContent = `National ID: ${p.nationalId} | ${p.gender}`;
+
+                    item.append(nameEl, metaEl);
+                    item.addEventListener('click', () => selectPatient(p));
+                    resultsBox.appendChild(item);
+                });
+
+                resultsBox.classList.add('show');
+            }
+
+            searchInput.addEventListener('focus', () => runSearch(searchInput.value.trim()));
+
+            toggleBtn.addEventListener('click', () => {
+                if (resultsBox.classList.contains('show')) {
+                    resultsBox.classList.remove('show');
+                } else {
+                    searchInput.focus();
+                    runSearch(searchInput.value.trim());
+                }
+            });
+
+            searchInput.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => runSearch(searchInput.value.trim()), 200);
+            });
+
+            searchInput.addEventListener('keydown', (e) => {
+                const items = resultsBox.querySelectorAll('.dropdown-item-custom');
+                if (items.length === 0) return;
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    currentIndex = (currentIndex + 1) % items.length;
+                    updateActive(items);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    currentIndex = (currentIndex - 1 + items.length) % items.length;
+                    updateActive(items);
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (currentIndex >= 0) items[currentIndex].click();
+                } else if (e.key === 'Escape') {
+                    resultsBox.classList.remove('show');
+                }
+            });
+
+            function updateActive(items) {
+                items.forEach(i => i.classList.remove('active'));
+                if (currentIndex >= 0) {
+                    items[currentIndex].classList.add('active');
+                    items[currentIndex].scrollIntoView({ block: 'nearest' });
+                }
+            }
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.dropdown-combobox')) {
+                    resultsBox.classList.remove('show');
+                }
+            });
+        }
+
+        function selectPatient(p) {
+            document.getElementById('PatientId').value = p.id;
+            document.getElementById('PatientName').value = p.name;
+            document.getElementById('NationalId').value = p.nationalId;  
+            document.getElementById('Gender').value = p.gender;
+
+            document.getElementById('patientHeaderName').textContent = p.name;
+            document.getElementById('patientHeaderMeta').textContent =
+                `National ID: ${p.nationalId} | Gender: ${p.gender}`;
+
+            if (searchInput) searchInput.value = p.name;
+            resultsBox.classList.remove('show');
+            document.getElementById('patientSelectError').style.display = 'none';
+        }
+
+        document.getElementById('appointmentForm').addEventListener('submit', function (e) {
+            const patientId = document.getElementById('PatientId').value;
+
+             if (!patientId || patientId === EMPTY_GUID) {
+                e.preventDefault();
+                const error = document.getElementById('patientSelectError');
+                if (error) error.style.display = 'block';
+            }
+        });
+
+        document.addEventListener('patientQuickAdded', (e) => selectPatient(e.detail));
+    </script>
+}

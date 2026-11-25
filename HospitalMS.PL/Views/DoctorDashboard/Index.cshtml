@@ -1,0 +1,245 @@
+﻿@using HospitalMS.BLL.ModelVM.DoctorDashboard
+@using HospitalMS.DAL.Enums
+@model DoctorDashboardViewModel
+
+@{
+    ViewData["Title"] = "Doctor Dashboard";
+    Layout = "_StaffLayout";
+
+    var activeQueue = Model.Queue.Where(x => x.AppointmentStatus != AppointmentStatus.Completed).ToList();
+    var completedQueue = Model.Queue.Where(x => x.AppointmentStatus == AppointmentStatus.Completed).ToList();
+
+    var scheduledCount = Model.Queue.Count(x => x.AppointmentStatus == AppointmentStatus.Scheduled);
+    var checkedInCount = Model.Queue.Count(x => x.AppointmentStatus == AppointmentStatus.Check_in);
+}
+@functions {
+    string GetStatusClass(AppointmentStatus status)
+    {
+        return status switch
+        {
+            AppointmentStatus.Scheduled => "text-bg-secondary",
+            AppointmentStatus.Check_in => "text-bg-info",
+            AppointmentStatus.Completed => "text-bg-success",
+            AppointmentStatus.Canceled => "text-bg-danger",
+            AppointmentStatus.No_show => "text-bg-warning",
+            _ => "text-bg-secondary"
+        };
+    }
+}
+
+<div class="container-fluid px-3 px-lg-4 py-4">
+
+    <div class="page-heading">
+        <div class="page-heading-copy">
+            <span class="page-icon"><i class="bi bi-person-badge" aria-hidden="true"></i></span>
+            <div>
+                <p class="eyebrow mb-1">Dr. @Model.DoctorName</p>
+                <h1 class="h3 mb-1">
+                    @(Model.SelectedDate.Date == DateTime.Today ? "Today's Patients" : "Patients")
+                </h1>
+                <p class="text-muted mb-0">
+                    @Model.DepartmentName &middot; @Model.SelectedDate.ToString("dddd, dd MMMM yyyy")
+                </p>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["Success"] is string successMsg)
+    {
+        <div class="alert alert-success mt-3" role="alert">@successMsg</div>
+    }
+    @if (TempData["Error"] is string errorMsg)
+    {
+        <div class="alert alert-danger mt-3" role="alert">@errorMsg</div>
+    }
+
+    <!-- Summary -->
+    <section class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 mt-1">
+        <div class="col">
+            <article class="metric-card metric-primary">
+                <div class="metric-top">
+                    <span class="metric-label">Total</span>
+                    <span class="metric-icon"><i class="bi bi-people" aria-hidden="true"></i></span>
+                </div>
+                <div class="metric-value">@Model.TotalToday</div>
+            </article>
+        </div>
+        <div class="col">
+            <article class="metric-card metric-purple">
+                <div class="metric-top">
+                    <span class="metric-label">Scheduled</span>
+                    <span class="metric-icon"><i class="bi bi-hourglass-split" aria-hidden="true"></i></span>
+                </div>
+                <div class="metric-value">@scheduledCount</div>
+            </article>
+        </div>
+        <div class="col">
+            <article class="metric-card metric-success">
+                <div class="metric-top">
+                    <span class="metric-label">Checked In</span>
+                    <span class="metric-icon"><i class="bi bi-person-check" aria-hidden="true"></i></span>
+                </div>
+                <div class="metric-value">@checkedInCount</div>
+            </article>
+        </div>
+        <div class="col">
+            <article class="metric-card metric-warning">
+                <div class="metric-top">
+                    <span class="metric-label">Completed</span>
+                    <span class="metric-icon"><i class="bi bi-check-circle" aria-hidden="true"></i></span>
+                </div>
+                <div class="metric-value">@completedQueue.Count</div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Active queue -->
+    <section class="panel mt-3">
+        <div class="panel-header flex-column flex-lg-row align-items-lg-start gap-2">
+            <h2 class="h6 mb-0 section-title">
+                <i class="bi bi-list-ul" aria-hidden="true"></i>
+                <span>Queue</span>
+            </h2>
+
+            <form asp-action="Index" method="get" class="d-flex flex-wrap align-items-center gap-2">
+                <input type="date" name="date" class="form-control form-control-sm" style="width: 155px;"
+                       aria-label="Date" value="@Model.SelectedDate.ToString("yyyy-MM-dd")">
+
+                <select name="status" class="form-select form-select-sm" style="width: 150px;" aria-label="Status">
+                    <option value="">-- All Statuses --</option>
+                    @foreach (var s in Enum.GetValues<AppointmentStatus>())
+                    {
+                        <option value="@s" selected="@(Model.Status == s)">@s.ToString().Replace("_", " ")</option>
+                    }
+                </select>
+
+                <input type="text" name="searchTerm" class="form-control form-control-sm" style="width: 170px;"
+                       aria-label="Search patient" placeholder="Search patient name..." value="@Model.SearchTerm" />
+
+                <button type="submit" class="btn btn-outline-secondary btn-sm" aria-label="Filter">
+                    <i class="bi bi-search"></i>
+                </button>
+
+                @if (Model.SelectedDate.Date != DateTime.Today || Model.Status.HasValue || !string.IsNullOrWhiteSpace(Model.SearchTerm))
+                {
+                    <a asp-action="Index" class="btn btn-primary btn-sm" title="Clear filters" aria-label="Clear filters">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                }
+            </form>
+
+            <span class="text-muted small">@activeQueue.Count patients</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width: 100px;">Time</th>
+                        <th scope="col">Patient</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!activeQueue.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">No active patients right now.</td>
+                        </tr>
+                    }
+                    @foreach (var item in activeQueue)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@item.AppointmentDate.ToString("hh:mm tt")</td>
+                            <td class="fw-medium">@item.PatientName</td>
+                            <td class="text-muted">@item.AppointmentType</td>
+                            <td>
+                                <span class="badge @GetStatusClass(item.AppointmentStatus) status-badge">
+                                    @item.AppointmentStatus.ToString().Replace("_", " ")
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                @if (item.AppointmentStatus == AppointmentStatus.Check_in)
+                                {
+                                    <form asp-action="Complete" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@item.AppointmentId" />
+                                        <input type="hidden" name="date" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+                                        <button type="submit" class="btn btn-sm btn-success table-action-btn">
+                                            <i class="bi bi-check2-circle"></i> <span>Complete</span>
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">—</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Completed -->
+    <section class="panel mt-3">
+        <div class="panel-header">
+            <h2 class="h6 mb-0 section-title">
+                <i class="bi bi-check-circle" aria-hidden="true"></i>
+                <span>Completed</span>
+            </h2>
+            <span class="text-muted small">@completedQueue.Count patients</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width: 100px;">Time</th>
+                        <th scope="col">Patient</th>
+                        <th scope="col">Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!completedQueue.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-4">No completed visits yet.</td>
+                        </tr>
+                    }
+                    @foreach (var item in completedQueue)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@item.AppointmentDate.ToString("hh:mm tt")</td>
+                            <td class="fw-medium">@item.PatientName</td>
+                            <td class="text-muted">@item.AppointmentType</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<style>
+    .table-action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        white-space: nowrap;
+        min-width: 110px;
+        height: 30px;
+        font-size: 0.8rem;
+        padding: 0.3rem 0.65rem;
+        line-height: 1.2;
+    }
+
+    .status-badge {
+        font-weight: 500;
+        font-size: 0.72rem;
+        padding: 0.4em 0.65em;
+    }
+</style>

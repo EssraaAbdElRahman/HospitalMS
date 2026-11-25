@@ -1,0 +1,523 @@
+﻿@using HospitalMS.BLL.ModelVM.UserAccount
+@using HospitalMS.DAL.Enums
+@using HospitalMS.BLL.ModelVM.Pagination
+@model UsersPageViewModel
+@{
+    ViewData["Title"] = "Users";
+    Layout = "_StaffLayout";
+}
+@functions {
+    string GetStatusClass(AccountStatus status)
+    {
+        return status switch
+        {
+            AccountStatus.Pending => "text-bg-warning",
+            AccountStatus.Active => "text-bg-success",
+            AccountStatus.OnHold => "text-bg-info",
+            AccountStatus.Suspended => "text-bg-danger",
+            _ => "text-bg-secondary"
+        };
+    }
+}
+<div class="container-fluid px-3 px-lg-4 py-4">
+    <div class="page-heading">
+        <div class="page-heading-copy">
+            <span class="page-icon"><i class="bi bi-people" aria-hidden="true"></i></span>
+            <div>
+                <p class="eyebrow mb-1">Management</p>
+                <h1 class="h3 mb-1">Users</h1>
+                <p class="text-muted mb-0">Review accounts, roles, account status, and team ownership.</p>
+            </div>
+        </div>
+        <div class="heading-actions">
+            <a class="btn btn-primary btn-sm"
+               asp-action="Create"
+               asp-permission="Users.Create">
+                <i class="bi bi-person-plus" aria-hidden="true"></i>
+                Add User
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary -->
+    <section class="row row-cols-1 row-cols-sm-2 row-cols-xl-5 g-3 mt-1" aria-label="User summary">
+        <div class="col">
+            <article class="metric-card metric-primary">
+                <div class="metric-top">
+                    <span class="metric-label">Total Users</span>
+                    <span class="metric-icon"><i class="bi bi-people-fill" aria-hidden="true"></i></span>
+                </div>
+                <div class="metric-value">@Model.Users.Summary.TotalUsers</div>
+            </article>
+        </div>
+        <div class="col">
+            <article class="metric-card metric-success">
+                <div class="metric-top">
+                    <span class="metric-label">Staff Accounts</span>
+                    <span class="metric-icon"><i class="bi bi-person-badge-fill" aria-hidden="true"></i></span>
+                </div>
+                <div class="metric-value">@Model.Users.Summary.StaffCount</div>
+            </article>
+        </div>
+        <div class="col">
+            <article class="metric-card metric-warning">
+                <div class="metric-top">
+                    <span class="metric-label">Total Active</span>
+                    <span class="metric-icon"><i class="bi bi-person-check-fill" aria-hidden="true"></i></span>
+                </div>
+                <div class="metric-value">@Model.Users.Summary.TotalActive</div>
+            </article>
+        </div>
+        <div class="col">
+            <article class="metric-card metric-purple">
+                <div class="metric-top">
+                    <span class="metric-label">Total Pending</span>
+                    <span class="metric-icon"><i class="bi bi-person-exclamation" aria-hidden="true"></i></span>
+                </div>
+                <div class="metric-value">@Model.Users.Summary.TotalUserPending</div>
+            </article>
+        </div>
+        <div class="col">
+            <article class="metric-card metric-danger">
+                <div class="metric-top">
+                    <span class="metric-label">Reset Requests</span>
+                    <span class="metric-icon"><i class="bi bi-key-fill" aria-hidden="true"></i></span>
+                </div>
+                <div class="metric-value">@Model.Users.Summary.TotalPasswordResetRequests</div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Table panel -->
+    <section class="panel mt-3">
+        <div class="panel-header flex-column flex-lg-row align-items-lg-center gap-2">
+            @* بيتقري بالـ JS وبيتبعت مع طلبات توليد اللينكات *@
+            @Html.AntiForgeryToken()
+            <div>
+                <h2 class="h5 mb-1 section-title">
+                    <i class="bi bi-table" aria-hidden="true"></i>
+                    <span>User List</span>
+                </h2>
+                <p class="text-muted mb-0">Total Users: @Model.Users.PagedUsers.TotalCount</p>
+            </div>
+
+            <form asp-action="Index" method="get">
+                <div class="row g-2 align-items-center">
+                    <div class="col-6 col-md-auto">
+                        <select class="form-select form-select-sm" name="Info.UserType">
+                            <option value="">All Types</option>
+                            @foreach (var type in Enum.GetValues<UserType>())
+                            {
+                                <option value="@type" selected="@(Model.Users.SelectedUserType == type)">@type</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-6 col-md-auto">
+                        <select class="form-select form-select-sm" name="Info.StaffType">
+                            <option value="">All Staff Types</option>
+                            @foreach (var type in Enum.GetValues<StaffType>())
+                            {
+                                <option value="@type" selected="@(Model.Users.SelectedStaffType == type)">@type</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-6 col-md-auto">
+                        <select class="form-select form-select-sm" name="Info.Status">
+                            <option value="">All Statuses</option>
+                            @foreach (var status in Enum.GetValues<AccountStatus>())
+                            {
+                                <option value="@status" selected="@(Model.Users.SelectedStatus == status)">@status</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-6 col-md-auto">
+                        <select class="form-select form-select-sm" name="Info.PasswordResetStatus">
+                            <option value="">All Reset Requests</option>
+                            @foreach (var resetStatus in Enum.GetValues<PasswordResetRequestStatus>())
+                            {
+                                if (resetStatus != PasswordResetRequestStatus.None)
+                                {
+                                    <option value="@resetStatus" selected="@(Model.Users.SelectedPasswordResetStatus == resetStatus)">@resetStatus</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-6 col-md-auto">
+                        <input class="form-control form-control-sm"
+                               type="search"
+                               name="Info.Search"
+                               value="@Model.Users.PagedUsers.SearchTerm"
+                               placeholder="Search users"
+                               aria-label="Search users">
+                    </div>
+
+                    <div class="col-auto d-flex gap-1">
+                        <button type="submit" class="btn btn-primary btn-sm" title="Filter" aria-label="Filter">
+                            <i class="bi bi-search"></i>
+                        </button>
+
+                        @{
+                            var hasActiveFilters = Model.Users.SelectedUserType.HasValue
+                                || Model.Users.SelectedStaffType.HasValue
+                                || Model.Users.SelectedStatus.HasValue
+                                || Model.Users.SelectedPasswordResetStatus.HasValue
+                                || !string.IsNullOrEmpty(Model.Users.PagedUsers.SearchTerm);
+                        }
+
+                        <a asp-action="Index"
+                           class="btn btn-primary btn-sm @(hasActiveFilters ? "" : "invisible")"
+                           title="Clear filters" aria-label="Clear filters">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle mb-0" id="usersTable">
+                <thead>
+                    <tr>
+                        <th scope="col">Full Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var userItem in Model.Users.PagedUsers.Items)
+                    {
+                        <tr>
+                            <td>@userItem.FullName</td>
+                            <td>@userItem.Email</td>
+                            <td>@userItem.RoleName</td>
+                            <td>
+                                <span class="badge @GetStatusClass(userItem.Status)">@userItem.Status</span>
+                            </td>
+                            <td class="text-end">
+                                @if (userItem.Status == AccountStatus.Pending)
+                                {
+                                    <button asp-permission="Users.ManageStatus"
+                                            type="button"
+                                            class="btn btn-outline-secondary btn-sm rounded-circle action-btn me-1"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#activationLinkModal"
+                                            data-id="@userItem.Id"
+                                            data-name="@userItem.FullName"
+                                            data-url="@Url.Action("GenerateActivationLink", "User")"
+                                            title="Generate Activation Link"
+                                            aria-label="Generate activation link"
+                                            style="width:30px;height:30px;padding:0">
+                                        <i class="bi bi-link-45deg"></i>
+                                    </button>
+                                }
+                                @if (userItem.PasswordResetStatus == PasswordResetRequestStatus.Pending)
+                                {
+                                    <button asp-permission="Users.ManageStatus"
+                                            type="button"
+                                            class="btn btn-outline-info btn-sm rounded-circle action-btn me-1"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#linkModal"
+                                            data-id="@userItem.Id"
+                                            data-name="@userItem.FullName"
+                                            data-url="@Url.Action("GeneratePasswordResetLink", "User")"
+                                            data-modal-title="Password Reset Link"
+                                            data-modal-desc="to reset their password"
+                                            title="Generate Password Reset Link"
+                                            aria-label="Generate password reset link"
+                                            style="width:30px;height:30px;padding:0">
+                                        <i class="bi bi-key-fill"></i>
+                                    </button>
+                                }
+                                <a asp-permission="Users.View"
+                                   asp-action="Details" asp-route-id="@userItem.Id"
+                                   class="btn btn-success btn-sm rounded-circle action-btn me-1"
+                                   title="Details" aria-label="Details"
+                                   style="width:30px;height:30px;padding:0">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+                                <a asp-permission="Users.ManageStatus"
+                                   asp-action="UpdateStatus"
+                                   asp-route-id="@userItem.Id"
+                                   class="btn btn-outline-warning btn-sm rounded-circle action-btn me-1"
+                                   title="Change Account Status" aria-label="Change account status">
+                                    <i class="bi bi-person-gear"></i>
+                                </a>
+                                <a asp-permission="Users.Edit"
+                                   asp-action="Edit"
+                                   asp-route-id="@userItem.Id"
+                                   class="btn btn-primary btn-sm rounded-circle action-btn me-1"
+                                   title="Edit User" aria-label="Edit user">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (TempData["Success"] is string successMsg)
+        {
+            <div id="successMessage"
+                 class="position-fixed top-50 start-50 translate-middle bg-success text-white px-4 py-3 rounded-3 shadow-lg"
+                 style="z-index: 9999;">
+                <i class="bi bi-check-circle-fill me-2"></i>@successMsg
+            </div>
+        }
+
+        @if (TempData["Error"] is string errorMsg)
+        {
+            <div id="errorMessage"
+                 class="position-fixed top-50 start-50 translate-middle bg-danger text-white px-4 py-3 rounded-3 shadow-lg"
+                 style="z-index: 9999;">
+                <i class="bi bi-x-circle-fill me-2"></i>@errorMsg
+            </div>
+        }
+
+        @await Html.PartialAsync("_Pagination", new PaginationViewModel
+        {
+            CurrentPage = Model.Users.PagedUsers.CurrentPage,
+            PageSize = Model.Users.PagedUsers.PageSize,
+            TotalCount = Model.Users.PagedUsers.TotalCount,
+            TotalPages = Model.Users.PagedUsers.TotalPages,
+            SearchTerm = Model.Users.PagedUsers.SearchTerm
+        })
+    </section>
+</div>
+
+<!-- Activation Link Modal -->
+<div class="modal fade" id="activationLinkModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-link-45deg text-primary me-2"></i>
+                    Activation Link
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2">
+                    Send this link to <strong id="activationUserName"></strong> to activate their account:
+                </p>
+
+                <div id="activationLinkLoading" class="text-center py-3">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                    <span class="ms-2">Generating link...</span>
+                </div>
+
+                <div id="activationLinkResult" class="d-none">
+                    <div class="input-group">
+                        <input type="text" id="activationLinkInput" class="form-control" readonly>
+                        <button type="button" class="btn btn-outline-primary" id="copyActivationLinkBtn">
+                            <i class="bi bi-clipboard"></i> Copy
+                        </button>
+                    </div>
+                    <small class="text-muted d-block mt-2">
+                        The link is valid for a limited time and can be used once.
+                    </small>
+                </div>
+
+                <div id="activationLinkError" class="alert alert-danger d-none mb-0"></div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Password Reset Link Modal -->
+<div class="modal fade" id="linkModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="linkModalTitle">
+                    <i class="bi bi-key-fill text-info me-2"></i>
+                    Generated Link
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2">
+                    Send this link to <strong id="linkUserName"></strong>
+                    <span id="linkModalDesc"></span>:
+                </p>
+
+                <div id="linkLoading" class="text-center py-3">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                    <span class="ms-2">Generating link...</span>
+                </div>
+
+                <div id="linkResult" class="d-none">
+                    <div class="input-group">
+                        <input type="text" id="linkInput" class="form-control" readonly>
+                        <button type="button" class="btn btn-outline-primary" id="copyLinkBtn">
+                            <i class="bi bi-clipboard"></i> Copy
+                        </button>
+                    </div>
+                    <small class="text-muted d-block mt-2">
+                        The link is valid for a limited time and can be used once.
+                    </small>
+                </div>
+
+                <div id="linkError" class="alert alert-danger d-none mb-0"></div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // =========================================================
+        // Helpers
+        // =========================================================
+
+        function postForLink(url, userId) {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            return fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': token
+                },
+                body: new URLSearchParams({ userId })
+            }).then(response => response.json());
+        }
+
+        function setupCopyButton(button, input) {
+            if (!button) return;
+
+            button.addEventListener('click', function () {
+                navigator.clipboard.writeText(input.value).then(() => {
+                    const originalHtml = button.innerHTML;
+                    button.innerHTML = '<i class="bi bi-check-lg"></i> Copied';
+                    button.classList.replace('btn-outline-primary', 'btn-success');
+
+                    setTimeout(() => {
+                        button.innerHTML = originalHtml;
+                        button.classList.replace('btn-success', 'btn-outline-primary');
+                    }, 1500);
+                });
+            });
+        }
+
+        function setupLinkModal(config) {
+            const modal = document.getElementById(config.modalId);
+            if (!modal) return;
+
+            const loadingEl = document.getElementById(config.loadingId);
+            const resultEl = document.getElementById(config.resultId);
+            const errorEl = document.getElementById(config.errorId);
+            const input = document.getElementById(config.inputId);
+
+            modal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const userId = button.getAttribute('data-id');
+                const url = button.getAttribute('data-url');
+
+                document.getElementById(config.userNameId).textContent = button.getAttribute('data-name');
+
+                if (config.onOpen) config.onOpen(button);
+
+                loadingEl.classList.remove('d-none');
+                resultEl.classList.add('d-none');
+                errorEl.classList.add('d-none');
+                input.value = '';
+
+                postForLink(url, userId)
+                    .then(data => {
+                        loadingEl.classList.add('d-none');
+
+                        if (data.success) {
+                            input.value = data.link;
+                            resultEl.classList.remove('d-none');
+                        } else {
+                            errorEl.textContent = data.message || config.defaultError;
+                            errorEl.classList.remove('d-none');
+                        }
+                    })
+                    .catch(() => {
+                        loadingEl.classList.add('d-none');
+                        errorEl.textContent = 'An error occurred while generating the link.';
+                        errorEl.classList.remove('d-none');
+                    });
+            });
+
+            setupCopyButton(document.getElementById(config.copyId), input);
+        }
+
+        setupLinkModal({
+            modalId: 'activationLinkModal',
+            loadingId: 'activationLinkLoading',
+            resultId: 'activationLinkResult',
+            errorId: 'activationLinkError',
+            inputId: 'activationLinkInput',
+            copyId: 'copyActivationLinkBtn',
+            userNameId: 'activationUserName',
+            defaultError: 'Failed to generate activation link.'
+        });
+
+        setupLinkModal({
+            modalId: 'linkModal',
+            loadingId: 'linkLoading',
+            resultId: 'linkResult',
+            errorId: 'linkError',
+            inputId: 'linkInput',
+            copyId: 'copyLinkBtn',
+            userNameId: 'linkUserName',
+            defaultError: 'Failed to generate password reset link.',
+            onOpen: function (button) {
+                document.getElementById('linkModalTitle').textContent =
+                    button.getAttribute('data-modal-title') || 'Generated Link';
+                document.getElementById('linkModalDesc').textContent =
+                    button.getAttribute('data-modal-desc') || '';
+            }
+        });
+
+        // =========================================================
+        // User Type / Staff Type Filter
+        // =========================================================
+
+        const userTypeSelect = document.querySelector('select[name="Info.UserType"]');
+        const staffTypeSelect = document.querySelector('select[name="Info.StaffType"]');
+
+        function toggleStaffTypeFilter() {
+            if (!userTypeSelect || !staffTypeSelect) return;
+
+            const isStaff = userTypeSelect.value === 'Staff';
+            staffTypeSelect.disabled = !isStaff;
+
+            if (!isStaff) staffTypeSelect.value = '';
+        }
+
+        if (userTypeSelect && staffTypeSelect) {
+            userTypeSelect.addEventListener('change', toggleStaffTypeFilter);
+            toggleStaffTypeFilter();
+        }
+
+        // =========================================================
+        // Success / Error Messages
+        // =========================================================
+
+        setTimeout(function () {
+            ['successMessage', 'errorMessage'].forEach(function (id) {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.transition = 'opacity 0.5s';
+                    el.style.opacity = '0';
+                    setTimeout(() => el.remove(), 500);
+                }
+            });
+        }, 2000);
+    </script>
+}

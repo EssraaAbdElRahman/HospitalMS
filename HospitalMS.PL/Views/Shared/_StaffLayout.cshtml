@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedCare HMS</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/vendors/bootstrap-icons/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="~/heart-pulse.svg">
+</head>
+<body>
+    <div class="admin-shell">
+        <div class="sidebar-backdrop" data-sidebar-close></div>
+        @using HospitalMS.DAL.Models.AppModule
+        @using Microsoft.AspNetCore.Identity
+        @inject UserManager<ApplicationUser> UserManager
+
+        @{
+                  var currentUser = await UserManager.GetUserAsync(User);
+                  ViewBag.FullName = currentUser?.FullName;
+         }
+        <partial name="_SidebarPartial" />
+
+        <div class="admin-main">
+            <partial name="_TopNavbarPartial" />
+
+            <main class="dashboard-content">
+                <div>
+                    @RenderBody()
+                </div>
+            </main>
+
+            <footer class="admin-footer">
+                <div class="container-fluid px-3 px-lg-4">
+                    <span>MedCare HMS</span>
+                    <span>Behind every record and standard is a compassionate heart making a real difference.</span>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/main.js"></script>  
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

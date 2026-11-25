@@ -1,0 +1,121 @@
+﻿@using HospitalMS.BLL.ModelVM.Permission
+@model PermissionMatrixViewModel
+@{
+    ViewData["Title"] = "Team & Permissions";
+    Layout = "_StaffLayout";
+}
+
+<div class="container-fluid px-3 px-lg-4 py-4">
+
+    <div class="page-heading">
+        <div class="page-heading-copy">
+            <span class="page-icon"><i class="bi bi-shield-lock" aria-hidden="true"></i></span>
+            <div>
+                <p class="eyebrow mb-1">Management</p>
+                <h1 class="h3 mb-1">Team & Permissions</h1>
+                <p class="text-muted mb-0">Control access levels and assign roles to your team.</p>
+            </div>
+        </div>
+        <div class="heading-actions">
+            <a class="btn btn-outline-secondary btn-sm" asp-action="Index" asp-controller="Role">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to roles
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] is string success)
+    {
+        <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+            <i class="bi bi-check-circle" aria-hidden="true"></i>
+            <span>@success</span>
+        </div>
+    }
+    @if (TempData["Error"] is string error)
+    {
+        <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            <span>@error</span>
+        </div>
+    }
+    @if (string.IsNullOrEmpty(Model.RoleId) || !Model.RoleNames.Any())
+{
+    <div class="alert alert-info">
+        Select a role from the <a asp-controller="Role" asp-action="Index">roles page</a> to manage its permissions.
+    </div>
+}
+else
+{
+        <form asp-action="Index" method="post">
+            <input type="hidden" name="RoleId" value="@Model.RoleId" />
+
+        @Html.AntiForgeryToken()
+
+        @foreach (var module in Model.Modules)
+        {
+            <section class="panel mb-3">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="h5 mb-1 section-title">
+                            <span>@module.ModuleName</span>
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="role-name">Role</th>
+                                @foreach (var col in module.Columns)
+                                {
+                                    <th class="text-center">@col.Label</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var role in Model.RoleNames)
+                            {
+                                bool isSuperAdmin = role == "SuperAdmin";
+                                <tr>
+                                    <td class="role-name fw-semibold">
+                                        @role
+                                        @if (isSuperAdmin)
+                                        {
+                                            <span class="badge text-bg-secondary ms-1">Full Access</span>
+                                        }
+                                    </td>
+                                    @foreach (var col in module.Columns)
+                                    {
+                                        bool isChecked = Model.RolePermissions.TryGetValue(role, out var set) && set.Contains(col.Key);
+                                        <td class="text-center">
+                                            <div class="form-check d-flex justify-content-center m-0">
+                                                @if (isSuperAdmin)
+                                                {
+                                                    <input class="form-check-input" type="checkbox" checked="checked" disabled
+                                                           title="Super Admin always has full access" />
+                                                }
+                                                else
+                                                {
+                                                        <input class="form-check-input" type="checkbox" name="Selected"
+                                                        value="@col.Key" checked="@isChecked" />
+                                                }
+                                            </div>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        }
+
+        <div class="d-flex flex-wrap justify-content-end gap-2 mt-4">
+            <a class="btn btn-outline-secondary" asp-action="Index" asp-controller="Role">Cancel</a>
+            <button class="btn btn-primary" type="submit">
+                <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                Save Changes
+            </button>
+        </div>
+    </form>
+}

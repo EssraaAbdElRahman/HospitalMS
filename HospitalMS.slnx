@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/docs/">
+    <File Path="../HospitalMS_ERD.drawio" />
+    <File Path="../HospitalMS_ERD.png" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="HospitalMS.BLL/HospitalMS.BLL.csproj" />
+    <Project Path="HospitalMS.DAL/HospitalMS.DAL.csproj" />
+    <Project Path="HospitalMS.PL/HospitalMS.PL.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="HospitalMS.BLL.Tests/HospitalMS.BLL.Tests.csproj" />
+  </Folder>
+</Solution>
