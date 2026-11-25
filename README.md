@@ -71,7 +71,7 @@ Identity workflows also use ASP.NET Core Identity managers and its EF Core store
 | ASP.NET Core Identity | User and role stores, password sign-in, role management, claims, and reset/activation tokens. |
 | Cookie authentication | Browser sign-in through Identity; application cookie is configured in `HospitalMS.PL/Program.cs`. |
 | Bootstrap, jQuery, JavaScript, CSS | Local frontend assets under `HospitalMS.PL/wwwroot/`. |
-| xUnit | Test framework dependency declared by `HospitalMS.BLL.Tests`; no test cases currently exist in the repository. |
+| Test tooling | `HospitalMS.BLL.Tests` uses `xunit` 2.9.3, `xunit.runner.visualstudio` 3.1.4, `Microsoft.NET.Test.Sdk` 17.14.1, Moq 4.21.0, MockQueryable.Moq 10.0.13, `Microsoft.Data.Sqlite` 10.0.14, `Microsoft.EntityFrameworkCore.InMemory` 10.0.14, `Microsoft.EntityFrameworkCore.Sqlite.Core` 10.0.14, and `coverlet.collector` 6.0.4. |
 
 Services map entities to view models manually. No AutoMapper/Mapster, FluentValidation, JWT bearer setup, Swagger/OpenAPI, or separate frontend application was found in the inspected source.
 
@@ -89,7 +89,7 @@ HospitalMS.slnx
 │   ├── Authorization/              Permission identifiers
 │   ├── Common/                      Service result and service registrations
 │   ├── ModelVM/                     MVC input/output view models
-│   ├── Seeding/                     Identity role and user seeding
+│   ├── Seeding/                     Identity and Development demo data seeders
 │   └── Service/                     Service abstractions and implementations
 ├── HospitalMS.DAL/                 Persistence and data access layer
 │   ├── Configurations/              EF Core entity configurations
@@ -98,7 +98,15 @@ HospitalMS.slnx
 │   ├── Models/                      Domain and Identity entities
 │   ├── Repositories/                Repository interfaces and implementations
 │   └── UnitOfWorks/                 Unit of Work abstraction and implementation
-└── HospitalMS.BLL.Tests/            xUnit test project (no test source files found)
+└── HospitalMS.BLL.Tests/            xUnit service test project
+    ├── Global/                      Global using directives
+    ├── Helper/                      Async query-provider test helpers
+    └── Services/
+        ├── Account/                 Account, role, permission, and user-account tests
+        ├── AppointmentTests/        AppointmentServiceTests
+        ├── DoctorTests/             Doctor, schedule, department, and specialty tests
+        ├── PatientTests/            PatientServiceTests
+        └── ReceptionistTests/       ReceptionistServiceTests
 ```
 
 ## Implemented Patterns
@@ -253,13 +261,55 @@ The checked-in launch profiles use `http://localhost:5219` and `https://localhos
 
 ## Testing
 
-Run the test project with:
+### Overview
+
+`HospitalMS.BLL.Tests` contains unit tests for business-layer services. The tests exercise service behavior with mocked dependencies and isolated in-memory data stores; they do not constitute controller, end-to-end, or SQL Server integration tests. Running the test project currently discovers **451 tests**.
+
+### Framework and libraries
+
+The test project targets `net10.0` and references `xunit` 2.9.3, `xunit.runner.visualstudio` 3.1.4, `Microsoft.NET.Test.Sdk` 17.14.1, Moq 4.21.0, MockQueryable.Moq 10.0.13, `Microsoft.Data.Sqlite` 10.0.14, `Microsoft.EntityFrameworkCore.InMemory` 10.0.14, `Microsoft.EntityFrameworkCore.Sqlite.Core` 10.0.14, and `coverlet.collector` 6.0.4. `AccountServiceTestsBase` creates a SQLite in-memory `HospitalDbContext`; `RoleServiceTests` uses EF Core's InMemory provider. Moq and MockQueryable are used to isolate Identity/repository dependencies and queryable behavior.
+
+### Implemented test coverage
+
+| Test class(es) | Methods and scenarios covered |
+|---|---|
+| `PatientServiceTests` | Paging, search, list/detail mapping, create/update, user assignment, delete, national-ID validation/uniqueness, soft-deleted and missing records, and repository/database failures. |
+| `ReceptionistServiceTests` | Paging, list/detail and national-ID lookup, create/update, user assignment, unassigned records, delete, validation, duplicate IDs, missing/deleted records, and repository errors. |
+| `DoctorServiceTests` | Paging and mapping, create/update, salary/department/specialty changes, user assignment, unassigned doctors, delete behavior, national-ID validation/uniqueness, missing/deleted records, and persistence failures. |
+| `DoctorScheduleServiceTests` | Schedule queries and day parsing, create/update/delete, required values and time-range validation, duplicate days, schedule conflicts, and missing/deleted records. |
+| `DepartmentServiceTests`, `SpecialtyServiceTests` | Paging, mapping, create/update/delete, name validation and uniqueness, soft deletion, missing records, and repository/database errors. |
+| `AppointmentServiceTests` | Queries, filtering/search/counts, create/update/change doctor, status updates, rescheduling, delete/cancel/no-show, appointment conflict handling, and missing/deleted records. |
+| `LoginAsyncTests`, `ActivateAccountAsyncTests`, `RequestPasswordResetAsyncTests` | `AccountService` login outcomes and lockout/account status, activation and password-reset flows, success/failure paths, sign-in behavior, and transaction rollback. |
+| `UserAccountServiceTests` | User details, status transitions, activation/reset link generation, invalid state and missing-user cases, and Identity update failures. |
+| `RoleServiceTests`, `PermissionServiceTests` | Role creation/editing, protected roles, listing/paging/details, permission matrix reads and updates, invalid selections, and Identity-operation failures/rollback. |
+
+The test suite includes successful, validation-failure, not-found, conflict, and exception scenarios across these services. It does not establish coverage for untested behavior elsewhere in the application, and no coverage percentage or minimum coverage threshold is configured here.
+
+### Approach and conventions
+
+Tests are organized by service area under `Services/`, use descriptive method names in `Method_Scenario_ExpectedResult` form, and use xUnit `[Fact]`/`[Theory]` tests. Dependencies are generally isolated with Moq; SQLite in-memory and EF Core InMemory are used for selected service tests. These isolated providers are not substitutes for validating the production SQL Server provider, migrations, or the full application request pipeline.
+
+### Run tests
+
+From the repository root:
 
 ```powershell
 dotnet test .\HospitalMS.BLL.Tests\HospitalMS.BLL.Tests.csproj
 ```
 
-The project declares xUnit and the .NET test SDK, but no test source files or discoverable tests were present in the inspected repository. The command therefore does not currently provide meaningful behavioral coverage. Add tests for business rules, authorization, persistence mappings, and the known edge cases before relying on automated regression protection.
+For detailed test output:
+
+```powershell
+dotnet test .\HospitalMS.BLL.Tests\HospitalMS.BLL.Tests.csproj --logger "console;verbosity=normal"
+```
+
+Coverlet collector is included in the test project, and this command was verified to produce a Cobertura report:
+
+```powershell
+dotnet test .\HospitalMS.BLL.Tests\HospitalMS.BLL.Tests.csproj --collect:"XPlat Code Coverage"
+```
+
+The generated report is written under `HospitalMS.BLL.Tests/TestResults/`; the command collects coverage but does not publish or enforce a coverage threshold.
 
 ## Screenshots
 
@@ -293,7 +343,7 @@ The project declares xUnit and the .NET test SDK, but no test source files or di
 
 ## Known Limitations
 
-- No discoverable automated tests are currently present.
+- Automated tests currently focus on BLL service behavior; controller/request-pipeline, end-to-end, and production SQL Server integration scenarios are not covered by this test project.
 - The bootstrap administrator credential is hard-coded in the identity seeder; do not deploy it as-is.
 - Password-reset requests update account state but no email or external notification integration was found.
 - Appointment action-level permission checks are inconsistent; some actions require only an authenticated user.
@@ -310,7 +360,7 @@ These items are **recommendations, not features currently implemented**:
 1. Replace the hard-coded bootstrap credential with a secure, environment-specific provisioning process and external secret management.
 2. Review and apply consistent authorization policies and resource-ownership checks to appointment and patient-related actions.
 3. Fix and cover the entity validation, navigation loading, and schedule update behaviors described above.
-4. Add unit and integration tests for service rules, authorization boundaries, EF Core mappings, migrations, and end-to-end workflows.
+4. Extend automated tests to controller authorization and request flows, production SQL Server/migration behavior, and end-to-end workflows; retain the existing service-level regression tests.
 5. Add an email/notification provider if password-reset and activation links are intended to be delivered to users.
 6. Align NuGet package versions across projects and review production connection, host, and TLS settings.
 7. Consider documenting a stable API contract or adding OpenAPI only if a public/consumed API is an intended product requirement.

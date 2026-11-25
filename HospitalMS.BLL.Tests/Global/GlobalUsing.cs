@@ -1,0 +1,10 @@
+﻿global using HospitalMS.DAL.Enums;
+global using HospitalMS.DAL.Models.AppointmentModule;
+global using HospitalMS.BLL.Service.Abstraction;
+global using Microsoft.EntityFrameworkCore;
+global using HospitalMS.DAL.Repositories.Abstraction;
+global using Microsoft.AspNetCore.Http;
+global using HospitalMS.BLL.Service.Implementation;
+global using Moq;
+global using HospitalMS.DAL.UnitOfWorks;
+global using HospitalMS.DAL.Models.AppModule;
