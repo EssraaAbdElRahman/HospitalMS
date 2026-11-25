@@ -60,42 +60,6 @@ A typical application request follows this path:
 
 Identity workflows also use ASP.NET Core Identity managers and its EF Core store.
 
-## Database Design
-
-![Hospital Management System ERD](docs/database/HospitalMS-ERD.png)
-
-Editable source: [HospitalMS-ERD.drawio](docs/database/HospitalMS-ERD.drawio)
-
-## Application Screenshots
-
-### Dashboard
-
-![Dashboard](docs/screenshots/UserDashboard.png)
-
-### Users Management
-
-![Users](docs/screenshots/Add_User.png)
-
-### Patients Management
-
-![Patients](docs/screenshots/Patients.png)
-
-### Doctors Management
-
-![Doctors](docs/screenshots/DoctorDetails.png)
-
-### Appointment Management
-
-![Appointments](docs/screenshots/Appointments.png)
-
-![Appointments](docs/screenshots/Book_Appointement.png)
-
-### Roles Management
-
-![Roles](docs/screenshots/SetRole.png)
-
-![Roles](docs/screenshots/Role_Details.png)
-
 ## Technology Stack
 
 | Technology | Use in this repository |
@@ -202,6 +166,10 @@ No Swagger/OpenAPI document, API versioning, or JWT bearer authentication config
 
 ## Database Design
 
+![Hospital Management System ERD](docs/database/HospitalMS_ERD.png)
+
+Editable source: [HospitalMS-ERD.drawio](docs/database/HospitalMS_ERD.drawio)
+
 `HospitalDbContext` is an EF Core `IdentityDbContext` with application sets for patients, doctors, receptionists, departments, specialties, doctor schedules, and appointments. Entity configuration is centralized in `HospitalMS.DAL/Configurations/`. The physical specialty table is currently named `Specialisties` in `SpecialtyConfiguration`.
 
 ```mermaid
@@ -295,7 +263,33 @@ The project declares xUnit and the .NET test SDK, but no test source files or di
 
 ## Screenshots
 
-No application screenshots were present in the repository at the time this README was prepared. Add screenshots here when approved, repository-hosted captures become available.
+### Dashboard
+
+![Dashboard](docs/screenshots/UserDashboard.png)
+
+### Users Management
+
+![Users](docs/screenshots/Add_User.png)
+
+### Patients Management
+
+![Patients](docs/screenshots/Patients.png)
+
+### Doctors Management
+
+![Doctors](docs/screenshots/DoctorDetails.png)
+
+### Appointment Management
+
+![Appointments](docs/screenshots/Appointments.png)
+
+![Appointments](docs/screenshots/Book_Appointement.png)
+
+### Roles Management
+
+![Roles](docs/screenshots/SetRole.png)
+
+![Roles](docs/screenshots/Role_Details.png)
 
 ## Known Limitations
 
